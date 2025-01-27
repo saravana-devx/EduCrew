@@ -1,0 +1,32 @@
+/* src/components/Spinner.css */
+.spinner-container {
+    position: fixed; /* Position fixed to cover the whole viewport */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Full height */
+    width: 100vw; /* Full width */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+    z-index: 9999; /* Ensure it's on top of other elements */
+  }
+  
+  .spinner {
+    border: 8px solid #f3f3f3; /* Light gray background */
+    border-top: 8px solid #3498db; /* Blue top */
+    border-radius: 50%; /* Circular shape */
+    width: 60px; /* Spinner size */
+    height: 60px; /* Spinner size */
+    animation: spin 1s linear infinite; /* Spinning animation */
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    } /* Start from 0 degrees */
+    100% {
+      transform: rotate(360deg);
+    } /* Complete a full rotation */
+  }
+  
