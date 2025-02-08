@@ -36,6 +36,7 @@ import {
   updateSubSection,
   deleteSubSection,
 } from "../controllers/course/section/subSection.controller";
+import Course from "../model/course";
 
 const router = Router();
 
@@ -114,5 +115,67 @@ router.patch(
   updateSubSection
 );
 router.post("/delete-subSection/:sectionId/:subSectionId", deleteSubSection);
+
+router.get("/api/get-earnings-by-month", async (req, res) => {
+  try {
+    const earningsByMonth = await Course.aggregate([
+      {
+        $match: { status: "Published" },
+      },
+      {
+        $project: {
+          courseName: 1,
+          price: 1,
+          studentCount: { $size: "$studentEnrolled" },
+          createdAtMonth: {
+            $dateToString: { format: "%Y-%m", date: "$createdAt" },
+          },
+          earnings: { $multiply: [{ $size: "$studentEnrolled" }, "$price"] },
+        },
+      },
+      {
+        $group: {
+          _id: "$createdAtMonth", // Group by month (year-month)
+          totalEarnings: { $sum: "$earnings" }, // Sum the earnings for each month
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by the month (ascending)
+      },
+    ]);
+
+    res.json(earningsByMonth);
+  } catch (error) {
+    console.error("Error fetching earnings by month:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// API Route 2: Get Earnings by Course
+router.get("/api/get-earnings-by-course", async (req, res) => {
+  try {
+    const earningsByCourse = await Course.aggregate([
+      {
+        $match: { status: "Published" },
+      },
+      {
+        $project: {
+          courseName: 1,
+          price: 1,
+          studentCount: { $size: "$studentEnrolled" },
+          earnings: { $multiply: [{ $size: "$studentEnrolled" }, "$price"] },
+        },
+      },
+      {
+        $sort: { earnings: -1 }, // Sort by earnings in descending order
+      },
+    ]);
+
+    res.json(earningsByCourse);
+  } catch (error) {
+    console.error("Error fetching earnings by course:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 export default router;

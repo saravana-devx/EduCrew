@@ -35,7 +35,7 @@ export const CourseAPI = {
   },
   deleteCourseByInstructor: async function (courseId: string) {
     const response: AxiosResponse = await api.request({
-      url: CourseURL.deleteCourseByInstructor + courseId,
+      url: CourseURL.deleteCourseByInstructor + `/${courseId}`,
       method: "POST",
       headers: getHeaders(),
     });

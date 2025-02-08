@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaBook, FaUsers, FaChalkboardTeacher } from "react-icons/fa";
 
-import StatsCard from "./StatsCard";
+import StatsCard from "../../components/dashboard/StatsCard";
 import Spinner from "../../components/common/spinner/Spinner";
 import { Course, Query, UserDetails } from "../../utils/types";
 import { ProfileAPI } from "../../api/auth/ProfileAPI";

@@ -14,6 +14,7 @@ import CourseProgress from "../../model/courseProgress";
 import Contact from "../../model/contact";
 import Student from "../../model/student";
 import Instructor from "../../model/instructor";
+import mongoose from "mongoose";
 
 export const getProfileDetails = asyncHandler(
   async (req: Request, res: Response) => {
@@ -101,50 +102,58 @@ export const updateProfile = asyncHandler(
 export const getInstructorDashboard = asyncHandler(
   async (req: Request, res: Response) => {
     const instructorId = req.currentUser.id;
-
-    const instructor = await Instructor.findById(instructorId)
-      .populate({
-        path: "courses",
-        populate: {
-          path: "ratingAndReview",
-          select: "rating",
-        },
-      })
-      .select("courses earnings");
-
-    if (!instructor || !instructor.courses) {
-      return res.status(HTTP_STATUS.NOT_FOUND).json(
-        new ApiResponse({
-          status: HTTP_STATUS.NOT_FOUND,
-          message: "No courses found for the instructor",
-        })
-      );
+    const instructor = await Instructor.findById(instructorId);
+    if (!instructor) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: "Instructor Not Found",
+      });
     }
-
-    const coursesWithAverageRating = instructor.courses.map((course: any) => {
-      const ratings = course.ratingAndReview.map(
-        (review: any) => review.rating
-      );
-      const averageRating =
-        ratings.length > 0
-          ? ratings.reduce((acc: number, rating: number) => acc + rating, 0) /
-            ratings.length
-          : null;
-
-      return {
-        ...course.toObject(),
-        averageRating,
-        totalStudentsEnrolled: course.studentEnrolled.length,
-      };
-    });
-
-    // Send the response, including earnings
+    const pipeline = [
+      {
+        $match: {
+          instructor: new mongoose.Types.ObjectId(instructorId),
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          courseName: 1,
+          price: 1,
+          totalStudentsEnrolled: { $size: "$studentEnrolled" },
+          status: 1,
+        },
+      },
+      {
+        $lookup: {
+          from: "ratingandreviews",
+          localField: "_id",
+          foreignField: "course",
+          as: "ratings",
+        },
+      },
+      {
+        $set: {
+          averageRating: { $ifNull: [{ $avg: "$ratings.rating" }, 0] },
+        },
+      },
+      {
+        $unset: "ratings",
+      },
+    ];
+    const courseData = await Course.aggregate(pipeline);
+    if (!courseData) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: "No Course Available",
+      });
+    }
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
         message: "Instructor Dashboard Details",
         data: {
-          courses: coursesWithAverageRating,
+          courses: courseData,
           totalEarnings: instructor.earnings,
         },
       })
@@ -152,9 +161,97 @@ export const getInstructorDashboard = asyncHandler(
   }
 );
 
+export const getCoursesInfoForAdmin = asyncHandler(
+  async (req: Request, res: Response) => {
+    const pipeline = [
+      {
+        $lookup: {
+          from: "users",
+          localField: "instructor",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      {
+        $unwind: {
+          path: "$userInfo",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          courseName: 1,
+          instructor: {
+            $concat: ["$userInfo.firstName", "$userInfo.lastName"],
+          },
+          price: 1,
+          studentEnrolled: {
+            $size: "$studentEnrolled",
+          },
+        },
+      },
+      { $unset: "userInfo" },
+
+      {
+        $lookup: {
+          from: "ratingandreviews",
+          localField: "_id",
+          foreignField: "course",
+          as: "ratings",
+        },
+      },
+      {
+        $set: {
+          averageRating: {
+            $ifNull: [{ $avg: "$ratings.rating" }, 0],
+          },
+        },
+      },
+      {
+        $unset: "ratings",
+      },
+    ];
+
+    const courses = await Course.aggregate(pipeline);
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: "Admin Dashboard courses Details",
+        data: { courses },
+      })
+    );
+  }
+);
+
+export const getUsersInfoForAdmin = asyncHandler(
+  async (req: Request, res: Response) => {
+    const pipeline = [
+      {
+        $project: {
+          name: {
+            $concat: ["$firstName", "$lastName"],
+          },
+          email: 1,
+          accountType: 1,
+          isActive: 1,
+        },
+      },
+    ];
+
+    const users = await User.aggregate(pipeline);
+
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: "Admin Dashboard Users Details",
+        data: { users },
+      })
+    );
+  }
+);
+
 export const getAdminDashboardDetails = asyncHandler(
   async (req: Request, res: Response) => {
-
     const allUsers = await User.find().select(
       "firstName lastName accountType email isActive id"
     );

@@ -41,7 +41,7 @@ export const ProfileAPI = {
       method: "GET",
       headers: getHeaders(),
     });
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   },
   getAdminDashboardData: async function () {

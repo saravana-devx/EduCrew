@@ -5,6 +5,7 @@ import { persistReducer } from "redux-persist";
 import userReducer from "./slices/userSlice";
 import courseEditorReducer from "./slices/courseEditorSlice";
 import courseDetailReducer from "./slices/courseDetailSlice";
+import InstructorDashboardSlice from "./slices/InstructorDashboardSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -24,10 +25,17 @@ const courseEditorConfig = {
   blacklist: ["temporaryState"],
 };
 
+// const InstructorDashboardConfig = {
+//   key: "InstructorDashboard",
+//   storage,
+//   blacklist: ["temporaryState"],
+// };
+
 const combinedReducer = combineReducers({
   users: persistReducer(userPersistConfig, userReducer),
   courseEditor: persistReducer(courseEditorConfig, courseEditorReducer),
   courseDetail: persistReducer(courseDetailConfig, courseDetailReducer),
+  instructorDashboard: InstructorDashboardSlice,
 });
 
 const rootReducer = (

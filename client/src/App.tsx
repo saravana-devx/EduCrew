@@ -60,6 +60,7 @@ function App() {
   console.log(token);
   const isLoggedIn = useAppSelector(loggedInStatus);
   let exp = 0;
+
   if (token) {
     try {
       const decodedData = jwtDecode<DecodedToken>(token);
@@ -72,8 +73,18 @@ function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  // if (isLoggedIn && token == null) {
+  //   dispatch(setLoggedIn(false));
+  //   dispatch(setLoggedIn(false));
+  //   dispatch(setUserDataNull());
+  //   localStorage.removeItem("persist:user");
+  //   localStorage.clear();
+  //   navigate("/");
+  //   dispatch({ type: "RESET" });
+  // }
+
   useEffect(() => {
-    if (exp > 0 ) {
+    if (exp > 0) {
       const currentTime = Math.floor(Date.now() / 1000);
       if (currentTime > exp) {
         dispatch(setLoggedIn(false));
