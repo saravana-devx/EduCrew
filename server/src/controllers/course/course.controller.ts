@@ -195,22 +195,26 @@ export const getAllCourses = asyncHandler(
 );
 
 export const getCourses = asyncHandler(async (req: Request, res: Response) => {
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 6;
+  console.log("Api started")
+  const page: number = Number(req.query.page) || 1;
+  const limit: number = Number(req.query.limit) || 6;
 
+  if (isNaN(page) || isNaN(limit)) {
+    return res.status(400).json({ message: "Invalid page or limit value" });
+  }
+  console.log("page and limit -> ", page, limit);
   //To eliminate previous page courses
   const startIndex = (page - 1) * limit;
 
   const courses = await Course.find().limit(limit).skip(startIndex).exec();
-  const totalCourses = await Course.countDocuments().exec();
-  
+  // const totalCourses = await Course.countDocuments().exec();
+
   res.status(HTTP_STATUS.OK).json(
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: `Displaying page ${page} with a limit of ${limit} courses per page.`,
       data: {
         courses,
-        totalCourses,
       },
     })
   );

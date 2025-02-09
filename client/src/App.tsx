@@ -97,7 +97,7 @@ function App() {
     }
   }, [exp, dispatch, navigate]);
   return (
-    <div className="w-full h-full md:bg-blue-50 overflow-x-hidden">
+    <div className="w-full h-full bg-white overflow-x-hidden">
       <Navbar />
       <Routes>
         {/* OPEN ROUTES */}

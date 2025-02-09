@@ -16,7 +16,6 @@ const TableComponent = <T,>({
 }: TableProps<T>) => {
   return (
     <Fragment>
-      <h3 className="text-xl font-bold mb-4">Your Courses</h3>
       <div className="bg-white rounded-lg shadow-md p-6 h-full">
         <div className="my-5 flex">
           <input

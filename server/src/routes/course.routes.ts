@@ -12,6 +12,7 @@ import {
   updateCourseStatus,
   deleteCourseByAdmin,
   deleteCourseByInstructor,
+  getCourses,
 } from "../controllers/course/course.controller";
 
 import {
@@ -115,6 +116,8 @@ router.patch(
   updateSubSection
 );
 router.post("/delete-subSection/:sectionId/:subSectionId", deleteSubSection);
+
+router.get("/api/get-courses", getCourses);
 
 router.get("/api/get-earnings-by-month", async (req, res) => {
   try {

@@ -94,15 +94,6 @@ const InstructorTable: React.FC = () => {
           value={courses.length}
           icon={<FaBook size={24} />}
         />
-        {/* <StatsCard
-          title="Total Enrollment"
-          value={courses.reduce(
-            (total: number, course: Course) =>
-              total + course.totalStudentsEnrolled,
-            0
-          )}
-          icon={<FaUsers size={24} />}
-        /> */}
         <StatsCard
           title="Revenue"
           value={totalEarnings}
@@ -110,16 +101,16 @@ const InstructorTable: React.FC = () => {
         />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 w-full h-auto sm:w-[1500px] sm:h-[560px]">
-        <div className="flex-1">
+      <div className="w-full h-auto flex flex-col xl:flex-row gap-4 ">
+        <div className="border-2 ">
           <EarningsByCourse />
         </div>
-        <div className="flex-1">
+        <div className="border-2">
           <EarningsByMonthChart />
         </div>
       </div>
 
-      <h3 className="text-xl font-bold mb-4">Your Courses</h3>
+      <h3 className="mt-8 text-2xl text-indigo-500 font-bold mb-4">Your Courses</h3>
       <TableComponent
         setQuery={setQuery}
         tableInstance={tableInstance}
