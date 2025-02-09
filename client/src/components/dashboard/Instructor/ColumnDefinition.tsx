@@ -24,6 +24,7 @@ declare module "@tanstack/table-core" {
     itemRank: RankingInfo;
   }
 }
+
 export const myFilter: FilterFn<Course> = (
   row,
   columnId,
@@ -80,3 +81,11 @@ export const defaultColumns = [
     cell: (props) => <RowActions row={props.row} />,
   }),
 ];
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  accountType: "Instructor" | "Student" | "Admin";
+  status: "Active" | "DeActive";
+}

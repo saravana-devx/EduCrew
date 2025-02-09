@@ -52,4 +52,21 @@ export const ProfileAPI = {
     });
     return response.data;
   },
+  getCoursesInfoForAdmin: async function () {
+    const response: AxiosResponse = await api.request({
+      url: ProfileURL.getCoursesInfoForAdmin,
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
+  getUsersInfoForAdmin: async function () {
+    const response: AxiosResponse = await api.request({
+      url: ProfileURL.getUsersInfoForAdmin,
+      method: "GET",
+      headers: getHeaders(),
+    });
+    console.log(response.data);
+    return response.data;
+  },
 };

@@ -35,11 +35,17 @@ export const instructorDashboardSlice = createSlice({
       action: PayloadAction<{ status: string; courseId: string }>
     ) => {
       const course = state.courses.find(
-        (course) => course._id === action.payload.courseId
+        (course) => course._id !== action.payload.courseId
       );
       if (course) {
         course.status = action.payload.status;
       }
+    },
+    // I have to add this function in handleDeleteCourse in instructor table -> RowAction.tsx
+    deleteCourse: (state, action: PayloadAction<{ courseId: string }>) => {
+      state.courses = state.courses.filter(
+        (course) => course._id !== action.payload.courseId
+      );
     },
   },
 });
@@ -50,4 +56,5 @@ export const getInstructorDashboard = (state: {
 
 export const { setInstructorDashboard, changeCourseStatus } =
   instructorDashboardSlice.actions;
+  
 export default instructorDashboardSlice.reducer;

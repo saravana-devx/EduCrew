@@ -6,6 +6,7 @@ import userReducer from "./slices/userSlice";
 import courseEditorReducer from "./slices/courseEditorSlice";
 import courseDetailReducer from "./slices/courseDetailSlice";
 import InstructorDashboardSlice from "./slices/InstructorDashboardSlice";
+import AdminDashboardSlice from "./slices/AdminDashboardSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -36,6 +37,7 @@ const combinedReducer = combineReducers({
   courseEditor: persistReducer(courseEditorConfig, courseEditorReducer),
   courseDetail: persistReducer(courseDetailConfig, courseDetailReducer),
   instructorDashboard: InstructorDashboardSlice,
+  adminDashboard: AdminDashboardSlice,
 });
 
 const rootReducer = (

@@ -25,6 +25,8 @@ export const ProfileURL = {
   deleteAccount: "/profile/delete-count",
   getInstructorDashboardData: "/profile/instructor-dashboard",
   getAdminDashboardData: "/profile/admin-dashboard",
+  getCoursesInfoForAdmin: "/profile/getCoursesInfoForAdmin",
+  getUsersInfoForAdmin: "/profile/getUsersInfoForAdmin",
 };
 
 export const CourseURL = {

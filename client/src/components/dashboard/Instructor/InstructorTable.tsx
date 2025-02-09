@@ -9,7 +9,6 @@ import { ProfileAPI } from "../../../api/auth/ProfileAPI";
 import { NoCreatedCoursesError } from "../../../components/common/error/ErrorPage";
 
 import {
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -18,24 +17,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { defaultColumns, myFilter } from "./ColumnDefinition";
-import { RxCaretDown, RxCaretSort, RxCaretUp } from "react-icons/rx";
 import {
   getInstructorDashboard,
   setInstructorDashboard,
 } from "../../../redux/slices/InstructorDashboardSlice";
 import { EarningsByCourse, EarningsByMonthChart } from "./Chart";
-import Pagination from "../pagination";
+import TableComponent from "../tableComponent";
 
 const InstructorTable: React.FC = () => {
-  // const initialData: DashboardData = {
-  //   courses: [],
-  //   totalEarnings: 0,
-  // };
-  // const [dashboardData, setDashboardData] =
-  //   useState<DashboardData>(initialData);
-
   const dashboardData = useAppSelector(getInstructorDashboard);
-  // console.log("dashboardData ---> ", dashboardData)
+
   const dispatch = useAppDispatch();
   useEffect(() => {
     ProfileAPI.getInstructorDashboardData()
@@ -129,85 +120,11 @@ const InstructorTable: React.FC = () => {
       </div>
 
       <h3 className="text-xl font-bold mb-4">Your Courses</h3>
-      <div className="bg-white rounded-lg shadow-md p-6 h-full">
-        <div className="my-5 flex">
-          <input
-            className="w-full border-2 border-violet-300 p-2 text-violet-700 outline-none transition-colors duration-200 focus:border-violet-500"
-            placeholder="Search..."
-            value={query ?? ""}
-            onChange={(e) => {
-              setQuery(String(e.target.value));
-            }}
-          ></input>
-        </div>
-        <div className="max-w-full  overflow-x-scroll overflow-y-hidden">
-          <div>
-            <table className="border-2 w-full p-4 ">
-              <thead className="border-2 bg-indigo-200">
-                {tableInstance.getHeaderGroups().map((headerGroup) => {
-                  return (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <th
-                            className="text-left py-4 px-6 text-gray-600 font-semibold uppercase text-sm border-b"
-                            colSpan={header.colSpan}
-                            key={header.id}
-                          >
-                            {header.isPlaceholder ? null : (
-                              <div
-                                onClick={header.column.getToggleSortingHandler()}
-                                className={`flex flex-row items-center justify-between gap-2 ${
-                                  header.column.getCanSort()
-                                    ? "cursor-pointer select-none"
-                                    : null
-                                }`}
-                              >
-                                {flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                                {header.column.getIsSorted() ? (
-                                  header.column.getIsSorted() === "desc" ? (
-                                    <RxCaretDown />
-                                  ) : (
-                                    <RxCaretUp />
-                                  )
-                                ) : (
-                                  <RxCaretSort />
-                                )}
-                              </div>
-                            )}
-                          </th>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </thead>
-              <tbody>
-                {tableInstance.getRowModel().rows.map((row) => {
-                  return (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => {
-                        return (
-                          <td key={cell.id} className="border-2 p-2">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <Pagination tableInstance={tableInstance} />
-      </div>
+      <TableComponent
+        setQuery={setQuery}
+        tableInstance={tableInstance}
+        query={query}
+      />
     </div>
   );
 };
