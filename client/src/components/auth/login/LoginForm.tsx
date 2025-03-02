@@ -12,7 +12,7 @@ import {
   setUserData,
 } from "../../../redux/slices/userSlice";
 
-import AuthTemplate from "../../../components/auth/Templates/AuthTemplate";
+import AuthTemplate from "../authLayout/AuthTemplate";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -33,19 +33,18 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(setLoading(true));
     try {
       const result = await AuthAPI.login(formData.email, formData.password);
-      dispatch(setLoggedIn(true));
+      console.log("result -> ", result);
       toast.success(result);
       dispatch(setToken(result.data.token));
       dispatch(setUserData(result.data.user));
       localStorage.setItem("token", result.data.token);
+      dispatch(setLoggedIn(true));
       toast.success("Logged In");
       navigate("/");
-      dispatch(setLoading(false));
     } catch (error) {
-      dispatch(setLoading(false));
+      console.log("error -> ", error);
       if (axios.isAxiosError(error)) {
         const { response } = error;
         if (response) {
@@ -67,6 +66,8 @@ const Login: React.FC = () => {
           }
         }
       }
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

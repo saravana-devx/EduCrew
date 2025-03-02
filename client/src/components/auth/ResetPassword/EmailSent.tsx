@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AxiosError } from "axios";
+import axios from "axios";
 import { AuthAPI } from "../../../api/auth/AuthAPI";
 import Spinner from "../../common/spinner/Spinner";
 
@@ -10,23 +10,22 @@ const EmailSent = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    AuthAPI.forgetPassword(email)
-      .then((result) => {
-        toast.success("Reset link sent to your email");
-        console.log(result);
-        navigate("/open-gmail");
-        setLoading(false);
-      })
-      .catch((error: AxiosError) => {
-        setLoading(false);
-        if (error.response?.status === 404) {
-          toast.warn("Email not exists");
-        }
-      });
+    try {
+      setLoading(true);
+      await AuthAPI.forgetPassword(email);
+      toast.success("Reset link sent to your email");
+      navigate("/open-gmail");
+      setLoading(false);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        toast.error("Email not exists");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

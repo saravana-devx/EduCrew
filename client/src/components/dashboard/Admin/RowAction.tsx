@@ -8,6 +8,7 @@ import {
 } from "../../../redux/slices/AdminDashboardSlice";
 import { useAppDispatch } from "../../../hooks/redux.hook";
 import { Row, RowData } from "@tanstack/react-table";
+import { CourseAPI } from "../../../api/course/CourseAPI";
 
 type RowActionsProps = {
   row: Row<RowData>;
@@ -51,7 +52,7 @@ export const DeleteCourseByAdmin: React.FC<RowActionsProps> = ({ row }) => {
   const handleDelete = async (courseId: string) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
-        // await CourseAPI.deleteCourseByInstructor(courseId);
+        await CourseAPI.deleteCourseByInstructor(courseId);
         dispatch(deleteCourse({ courseId: courseId }));
         toast.success("Course deleted successfully");
       } catch (error: unknown) {

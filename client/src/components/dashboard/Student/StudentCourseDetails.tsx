@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { useAppDispatch } from "../../../hooks/redux.hook";
-import { ProfileAPI } from "../../../api/auth/ProfileAPI";
 import Spinner from "../../../components/common/spinner/Spinner";
 import { NoPurchasedCoursesError } from "../../../components/common/error/ErrorPage";
 import CourseCard from "../../../components/course/CourseCard";
@@ -19,16 +18,17 @@ const StudentCourseDetails: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const result = await ProfileAPI.profileDetails();
-
+        const result = await CourseAPI.getEnrolledCourses();
+        setCourses(result.data.courses);
         const courseProgress = await CourseAPI.getCourseByProgress();
-
-        dispatch(setCourseProgress(courseProgress));
-        if (result && result.data && result.data.courses) {
-          setCourses(result.data.courses);
-        } else {
-          toast.error("Invalid response structure");
-        }
+        // console.log(courseProgress);
+        // console.log(
+        //   "response structure -> ",
+        //   courseProgress.data.progressWithTotalVideos
+        // );
+        dispatch(
+          setCourseProgress(courseProgress.data.progressWithTotalVideos)
+        );
       } catch (error: unknown) {
         if (error instanceof AxiosError && error.response?.status === 404) {
           toast.error("Failed to fetch courses");

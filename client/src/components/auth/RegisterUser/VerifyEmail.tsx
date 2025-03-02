@@ -9,41 +9,43 @@ import {
   setToken,
   setUserData,
 } from "../../../redux/slices/userSlice";
+import axios from "axios";
 
 const VerifyEmail: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const verifyToken = () => {
+  const verifyEmail = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
-    console.log("token -> ", token);
 
-    AuthAPI.ConfirmEmail(token)
-      .then((result) => {
-        toast.success("Account Verified");
-        console.log(result);
+    try {
+      if (token) {
         dispatch(setLoggedIn(true));
-        dispatch(setToken(token || ""));
-        localStorage.setItem("token", token || "");
-      })
-      .catch((error) => {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.status === 400
-        ) {
-          toast.warn("Invalid or Expired token");
-        } else if (error.response.data && error.response.data.status === 400) {
-          toast.warn("Email doesn't exist");
-        }
-      });
 
-    if (token) {
-      ProfileAPI.profileDetails().then((result) => {
-        dispatch(setUserData(result.data.user));
+        // Confirm email with the token
+        await AuthAPI.ConfirmEmail(token);
+        toast.success("Account Verified");
+
+        // Store token in the state and localStorage
+        dispatch(setToken(token));
+        localStorage.setItem("token", token);
+        const profileResult = await ProfileAPI.profileDetails();
+        dispatch(setUserData(profileResult.data.user));
         navigate("/");
-      });
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const statusCode = error.response?.status;
+        if (statusCode === 400) {
+          toast.warn("Invalid or Expired token");
+        } else if (statusCode === 404) {
+          toast.warn("Email doesn't exist");
+          navigate("/register-user");
+        }
+      }
+    } finally {
+      dispatch(setLoggedIn(false));
     }
   };
 
@@ -54,7 +56,7 @@ const VerifyEmail: React.FC = () => {
           Click Below Button to Verify Account.
         </h1>
         <button
-          onClick={verifyToken}
+          onClick={verifyEmail}
           className="w-40 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition ease-in-out duration-200"
         >
           Verify Account

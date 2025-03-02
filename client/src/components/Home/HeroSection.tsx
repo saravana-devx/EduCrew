@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
-import heroSectionImage from "../../assets/images/heroSectionImage.png"
+import heroSectionImage from "../../assets/images/heroSectionImage.png";
 
 const HeroSection: React.FC = () => {
   return (
@@ -16,12 +16,12 @@ const HeroSection: React.FC = () => {
             <span className="absolute left-0 bottom-0 -rotate-3 bg-yellow-400 w-20 md:w-28 h-[2px]"></span>
             <span className="absolute left-0 -bottom-1 -rotate-6 bg-yellow-400 w-20 md:w-28 h-[2px]"></span>
           </div>{" "}
-          Courses And Improve Your{" "}
+          Courses And Improve Your
           <div className="relative inline-block">
-            <span className="relative z-10 font-bold text-3xl md:text-3xl">
-              Skills
+            <span className="relative z-10 font-bold text-3xl md:text-4xl">
+              &nbsp; Skills
             </span>
-            <span className="absolute md:w-28 inset-1 bg-yellow-400 clip-zigzag"></span>
+            <span className="absolute md:w-28 h-10 inset-1 bg-yellow-400 clip-zigzag"></span>
           </div>
         </h1>
         <p className="text-sm md:text-lg my-4 md:my-6 font-medium text-slate-500 mt-4">

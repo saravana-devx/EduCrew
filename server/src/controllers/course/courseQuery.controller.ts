@@ -16,6 +16,8 @@ export const getCourseByCategory = asyncHandler(
       model: "User",
       select: "firstName lastName image",
     });
+    const totalCourses = courses.length;
+
     if (courses.length === 0) {
       throw new ApiError({
         status: HTTP_STATUS.NOT_FOUND,
@@ -27,7 +29,7 @@ export const getCourseByCategory = asyncHandler(
       new ApiResponse({
         status: HTTP_STATUS.OK,
         message: RESPONSE_MESSAGES.COURSES.CATEGORY_FOUND,
-        data: { courses },
+        data: { courses, totalCourses },
       })
     );
   }
@@ -59,7 +61,7 @@ export const getSearchResults = asyncHandler(
     if (searchResults.length === 0) {
       throw new ApiError({
         status: HTTP_STATUS.NOT_FOUND,
-        message: RESPONSE_MESSAGES.COURSES.NO_COURSES_FOUND,
+        message: RESPONSE_MESSAGES.COURSES.NOT_FOUND,
       });
     }
 
@@ -76,7 +78,7 @@ export const getSearchResults = asyncHandler(
 export const getTopCourses = asyncHandler(
   async (req: Request, res: Response) => {
     const topCourses = await Course.find()
-      .populate("instructor") 
+      .populate("instructor")
       .sort({ studentEnrolled: -1 })
       .limit(8);
 

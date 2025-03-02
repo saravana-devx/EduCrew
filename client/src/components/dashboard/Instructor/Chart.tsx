@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Line, Pie } from "react-chartjs-2"; // Import Bar chart from react-chartjs-2
+import { Bar, Line } from "react-chartjs-2"; // Import Bar chart from react-chartjs-2
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +12,8 @@ import {
   LineElement,
   TooltipItem,
 } from "chart.js"; // Import necessary components from chart.js
+import { ProfileAPI } from "../../../api/auth/ProfileAPI";
+import Spinner from "./Spinner";
 
 // Register chart components
 ChartJS.register(
@@ -39,18 +41,15 @@ interface EarningsData {
 export const EarningsByMonthChart: React.FC = () => {
   const [earningsData, setEarningsData] = useState<EarningsData[]>([]); // Store earnings data
 
-  // Fetch earnings data from the backend API
   useEffect(() => {
-    fetch("http://localhost:4000/api/v1/course/api/get-earnings-by-month")
-      .then((response) => response.json())
-      .then((data) => {
-        setEarningsData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching earnings data:", error);
-      });
+    async function getEarningsByMonth() {
+      const earnings = await ProfileAPI.getEarningsByMonth();
+      setEarningsData(earnings.data);
+    }
+    getEarningsByMonth();
   }, []);
 
+  console.log("earning data -> ", earningsData);
   // Prepare the chart data
   const chartData = {
     labels: earningsData.map((item) => item._id), // Months as labels (e.g., "2024-01")
@@ -103,16 +102,20 @@ export const EarningsByMonthChart: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="w-full flex justify-center items-center p-4">
       {earningsData.length > 0 ? (
         <Line
           data={chartData}
           options={chartOptions}
-          width={800}
-          height={500}
+          className="w-full max-w-3xl h-96 lg:h-auto"
         />
       ) : (
-        <p>Loading data...</p> // Show loading text while fetching data
+        <div className="flex flex-col justify-center items-center w-full h-[300px] sm:h-[400px] md:h-[500px]">
+          <p className="font-bold text-lg sm:text-xl md:text-2xl mb-6">
+            Loading data...
+          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+        </div>
       )}
     </div>
   );
@@ -122,14 +125,11 @@ export const EarningsByCourse: React.FC = () => {
   const [earningsData, setEarningsData] = useState<CourseData[]>([]); // Type the state
 
   useEffect(() => {
-    // Fetch earnings data from an API or MongoDB server
-    // Replace this URL with your actual data endpoint
-    fetch("http://localhost:4000/api/v1/course/api/get-earnings-by-course")
-      .then((response) => response.json())
-      .then((data) => {
-        setEarningsData(data); // Store the fetched data in state
-      })
-      .catch((error) => console.error("Error fetching earnings data:", error));
+    async function getEarningsByCourse() {
+      const earnings = await ProfileAPI.getEarningByCourse();
+      setEarningsData(earnings.data);
+    }
+    getEarningsByCourse();
   }, []);
 
   // Prepare chart data
@@ -137,7 +137,7 @@ export const EarningsByCourse: React.FC = () => {
     labels: earningsData.map((course) => course.courseName), // Course names
     datasets: [
       {
-        label: "Earnings ($)", // Label for the chart
+        label: "Earnings ($)",
         data: earningsData.map((course) => course.earnings), // Earnings values
         backgroundColor: [
           "rgba(173, 216, 230, 0.8)", // Light Blue
@@ -160,14 +160,14 @@ export const EarningsByCourse: React.FC = () => {
   // Chart options (customize as needed)
   const chartOptions = {
     responsive: true,
-    // maintainAspectRatio: false, // Prevents chart distortion
+    // maintainAspectRatio: true, // Prevents chart distortion
     indexAxis: "y", // Correct
     // Change to "x" for a vertical bar chart
     plugins: {
       title: {
         display: true,
         text: "Earnings by Course",
-        font: { size: 18 }, // Larger title for clarity
+        font: { size: 18 },
       },
       tooltip: {
         callbacks: {
@@ -192,6 +192,7 @@ export const EarningsByCourse: React.FC = () => {
           beginAtZero: true,
         },
       },
+
       y: {
         title: {
           display: true,
@@ -207,18 +208,18 @@ export const EarningsByCourse: React.FC = () => {
   };
 
   return (
-    <div className="w-full  p-4">
+    <div className="w-full flex justify-center items-center p-4">
       {earningsData.length > 0 ? (
-        <div>
-          <Bar
-            data={chartData}
-            options={chartOptions}
-            width={800}
-            height={500}
-          />
+        <div className="w-full max-w-3xl">
+          <Bar data={chartData} options={chartOptions} />
         </div>
       ) : (
-        <p className="text-center text-xl">Loading data...</p>
+        <div className="flex flex-col justify-center items-center w-full h-[300px] sm:h-[400px] md:h-[500px]">
+          <p className="font-bold text-lg sm:text-xl md:text-2xl mb-6">
+            Earnings By Course
+          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+        </div>
       )}
     </div>
   );

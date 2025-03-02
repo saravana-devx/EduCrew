@@ -5,7 +5,7 @@ const PaymentSuccess: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-green-50">
+    <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-4xl font-bold text-green-600">
         Payment Successful! 
       </h1>

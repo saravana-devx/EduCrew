@@ -100,17 +100,19 @@ const InstructorTable: React.FC = () => {
           icon={<FaRupeeSign size={24} />}
         />
       </div>
-
-      <div className="w-full h-auto flex flex-col xl:flex-row gap-4 ">
-        <div className="border-2 ">
+      
+      <div className="w-full flex flex-col xl:flex-row gap-4">
+        <div className="border-2 flex-1 p-4">
           <EarningsByCourse />
         </div>
-        <div className="border-2">
+        <div className="border-2 flex-1 p-4">
           <EarningsByMonthChart />
         </div>
       </div>
 
-      <h3 className="mt-8 text-2xl text-indigo-500 font-bold mb-4">Your Courses</h3>
+      <h3 className="mt-8 text-2xl text-indigo-500 font-bold mb-4">
+        Your Courses
+      </h3>
       <TableComponent
         setQuery={setQuery}
         tableInstance={tableInstance}

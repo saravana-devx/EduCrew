@@ -33,7 +33,7 @@ const generateVerificationToken = (userId: string) => {
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { firstName, lastName, email, password, accountType } = req.body;
-    console.log("account type -> ", accountType);
+
     // Validate required fields
     if (!firstName || !lastName || !email || !password || !accountType) {
       throw new ApiError({
@@ -132,7 +132,7 @@ export const registerUser = asyncHandler(
     res.status(HTTP_STATUS.CREATED).json(
       new ApiResponse({
         status: HTTP_STATUS.CREATED,
-        message: RESPONSE_MESSAGES.USERS.SIGNED_UP,
+        message: RESPONSE_MESSAGES.USERS.REGISTER,
         data: { user },
       })
     );
@@ -213,7 +213,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     .json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: RESPONSE_MESSAGES.USERS.SIGNED_IN,
+        message: RESPONSE_MESSAGES.USERS.LOGIN,
         data: { token, user },
       })
     );
@@ -240,32 +240,34 @@ export const confirmEmail = asyncHandler(
       const user = await User.findById(userId);
       if (!user) {
         throw new ApiError({
-          status: 404,
-          message: "User not found.",
+          status: HTTP_STATUS.NOT_FOUND,
+          message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
         });
       }
 
       // Mark the user as verified
       user.isActive = true;
-      user.verificationToken = undefined;
+      // user.verificationToken = undefined;
+      //Remove the verificationToken in user data
+      user.verificationToken = "";
       await user.save();
 
-      return res.status(200).json(
+      res.status(200).json(
         new ApiResponse({
-          status: 200,
-          message: "Account verified successfully.",
+          status: HTTP_STATUS.OK,
+          message: RESPONSE_MESSAGES.USERS.EMAIL_VERIFIED,
         })
       );
     } catch (error: any) {
       if (error.name === "TokenExpiredError") {
         throw new ApiError({
-          status: 400,
-          message: "Verification link has expired. Request a new one.",
+          status: HTTP_STATUS.BAD_REQUEST,
+          message: RESPONSE_MESSAGES.USERS.VERIFICATION_TOKEN_EXPIRED,
         });
       } else {
         throw new ApiError({
-          status: 400,
-          message: "Invalid token.",
+          status: HTTP_STATUS.BAD_REQUEST,
+          message: RESPONSE_MESSAGES.USERS.VERIFICATION_TOKEN_EXPIRED,
         });
       }
     }
@@ -279,7 +281,7 @@ export const updateUserPassword = asyncHandler(
 
     const user = await User.findOne({ email }, { password: 1 });
 
-    //compare oldPassword and saved password hashed value 
+    //compare oldPassword and saved password hashed value
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
       throw new ApiError({
         status: HTTP_STATUS.UNAUTHORIZED,
@@ -306,7 +308,7 @@ export const updateUserPassword = asyncHandler(
 
     const encryptedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    //save new hashed password 
+    //save new hashed password
     await User.findOneAndUpdate({ email }, { password: encryptedNewPassword });
 
     res.status(HTTP_STATUS.OK).json(
@@ -329,10 +331,8 @@ export const sendPasswordResetEmail = asyncHandler(
       });
     }
 
-    // console.log("email -> ", email);
-
     const user = await User.findOne({ email });
-    // console.log(user);
+
     if (!user) {
       throw new ApiError({
         status: HTTP_STATUS.NOT_FOUND,
@@ -374,11 +374,11 @@ export const resetPassword = asyncHandler(
   async (req: Request, res: Response) => {
     const { newPassword, confirmPassword } = req.body;
     const token = req.query.token as string | undefined;
-   
+
     if (!token) {
       throw new ApiError({
-        status: 400,
-        message: "Token is required.",
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: RESPONSE_MESSAGES.USERS.MISSING_TOKEN,
       });
     }
 
@@ -402,7 +402,8 @@ export const resetPassword = asyncHandler(
     }
 
     const encryptedPassword = await bcrypt.hash(newPassword, 10);
-
+    // delete the verification token in database of user
+    user.verificationToken = "";
     //save new hashed password
     await User.findByIdAndUpdate(user._id, {
       password: encryptedPassword,
@@ -421,10 +422,10 @@ export const toggleUserActiveStatus = asyncHandler(
   async (req: Request, res: Response) => {
     const { userId, isActive } = req.body;
 
-    
     if (!userId || typeof isActive !== "boolean") {
-      return res.status(400).json({
-        message: "Valid user ID and active status (true/false) are required",
+      throw new ApiError({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
       });
     }
 
@@ -436,14 +437,18 @@ export const toggleUserActiveStatus = asyncHandler(
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
+      throw new ApiError({
+        status: 404,
+        message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
+      });
     }
 
-    return res.status(200).json({
-      message: `User status has been updated to ${
-        isActive ? "active" : "inactive"
-      }`,
-      user: updatedUser,
-    });
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: RESPONSE_MESSAGES.USERS.USER_STATUS,
+        data: { user: updatedUser },
+      })
+    );
   }
 );

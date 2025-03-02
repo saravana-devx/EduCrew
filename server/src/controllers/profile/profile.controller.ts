@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 
 import asyncHandler from "../../middlewares/asyncHandler";
 
@@ -10,9 +10,6 @@ import uploadMediaToCloudinary from "../../utils/cloudinary/uploadMediaToCloudin
 import User from "../../model/User";
 import Course from "../../model/course";
 import Profile from "../../model/profile";
-import CourseProgress from "../../model/courseProgress";
-import Contact from "../../model/contact";
-import Student from "../../model/student";
 import Instructor from "../../model/instructor";
 import mongoose from "mongoose";
 
@@ -22,6 +19,7 @@ export const getProfileDetails = asyncHandler(
 
     const userDetails = await User.findById(id)
       .select("-password -isVerified  -courses -createdAt -updatedAt")
+      .populate("additionalDetails")
       .exec();
 
     if (!userDetails) {
@@ -43,13 +41,13 @@ export const getProfileDetails = asyncHandler(
 
 export const updateProfile = asyncHandler(
   async (req: Request, res: Response) => {
-    if (!req.body || Object.keys(req.body).length === 0) {
+    if (!req.body && Object.keys(req.body).length === 0 && !req.file) {
       throw new ApiError({
         status: HTTP_STATUS.BAD_REQUEST,
-        message: "No data provided for updating profile",
+        message: RESPONSE_MESSAGES.USERS.NO_DATA_PROVIDED,
       });
     }
-
+    console.log("new user data =? ", req.body)
     const { firstName, lastName, gender, dob, about, contactNumber } = req.body;
     const user = req.currentUser;
 
@@ -99,14 +97,38 @@ export const updateProfile = asyncHandler(
   }
 );
 
+export const deleteAccount = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.currentUser;
+
+    const deletedAccount = await User.findByIdAndDelete(id);
+
+    if (!deletedAccount) {
+      throw new ApiError({
+        status: HTTP_STATUS.CONFLICT,
+        message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
+      });
+    }
+
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: RESPONSE_MESSAGES.USERS.DELETED,
+        data: { deletedAccount },
+      })
+    );
+  }
+);
+
 export const getInstructorDashboard = asyncHandler(
   async (req: Request, res: Response) => {
     const instructorId = req.currentUser.id;
     const instructor = await Instructor.findById(instructorId);
+
     if (!instructor) {
       throw new ApiError({
         status: HTTP_STATUS.BAD_REQUEST,
-        message: "Instructor Not Found",
+        message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
       });
     }
     const pipeline = [
@@ -145,17 +167,107 @@ export const getInstructorDashboard = asyncHandler(
     if (!courseData) {
       throw new ApiError({
         status: HTTP_STATUS.BAD_REQUEST,
-        message: "No Course Available",
+        message: RESPONSE_MESSAGES.USERS.NO_COURSE_CREATED,
       });
     }
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "Instructor Dashboard Details",
+        message: RESPONSE_MESSAGES.USERS.INSTRUCTOR_DASHBOARD_SUMMARY,
         data: {
           courses: courseData,
           totalEarnings: instructor.earnings,
         },
+      })
+    );
+  }
+);
+
+export const getEarningByMonth = asyncHandler(
+  async (req: Request, res: Response) => {
+    const instructorId = req.currentUser.id;
+    console.log("id -> ", instructorId);
+    const earningsByMonth = await Course.aggregate([
+      {
+        $match: {
+          $and: [
+            // { status: "Published" },
+            {
+              instructor: new mongoose.Types.ObjectId(instructorId),
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          courseName: 1,
+          price: 1,
+          studentCount: { $size: "$studentEnrolled" },
+          createdAtMonth: {
+            $dateToString: {
+              format: "%Y-%m",
+              date: "$createdAt",
+            },
+          },
+          earnings: {
+            $multiply: [{ $size: "$studentEnrolled" }, "$price"],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$createdAtMonth", // Group by month (year-month)
+          totalEarnings: { $sum: "$earnings" }, // Sum the earnings for each month
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by the month (ascending)
+      },
+    ]);
+
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: RESPONSE_MESSAGES.USERS.EARNING_BY_MONTH,
+        data: earningsByMonth,
+      })
+    );
+  }
+);
+
+export const getEarningByCourses = asyncHandler(
+  async (req: Request, res: Response) => {
+    const instructorId = req.currentUser.id;
+
+    const earningsByCourse = await Course.aggregate([
+      {
+        $match: {
+          $and: [
+            // { status: "Published" },
+            {
+              instructor: new mongoose.Types.ObjectId(instructorId),
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          courseName: 1,
+          price: 1,
+          studentCount: { $size: "$studentEnrolled" },
+          earnings: { $multiply: [{ $size: "$studentEnrolled" }, "$price"] },
+        },
+      },
+      {
+        $sort: { earnings: -1 }, // Sort by earnings in descending order
+      },
+    ]);
+
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: RESPONSE_MESSAGES.USERS.EARNING_BY_COURSE,
+        data: earningsByCourse,
       })
     );
   }
@@ -216,7 +328,7 @@ export const getCoursesInfoForAdmin = asyncHandler(
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "Admin Dashboard courses Details",
+        message: RESPONSE_MESSAGES.USERS.ADMIN_DASHBOARD_COURSE_DETAILS,
         data: { courses },
       })
     );
@@ -243,63 +355,67 @@ export const getUsersInfoForAdmin = asyncHandler(
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "Admin Dashboard Users Details",
+        message: RESPONSE_MESSAGES.USERS.ADMIN_DASHBOARD_USER_DETAILS,
         data: { users },
       })
     );
   }
 );
 
-export const getAdminDashboardDetails = asyncHandler(
+export const getTotalStudentAndInstructor = asyncHandler(
   async (req: Request, res: Response) => {
-    const allUsers = await User.find().select(
-      "firstName lastName accountType email isActive id"
-    );
-    const allCourses = await Course.find().select(
-      "courseName instructor studentEnrolled status id"
-    );
-    const allQuery = await Contact.find();
-
-    const { instructors, students } = allUsers.reduce(
-      (counts, user) => {
-        if (user.accountType === "Instructor") {
-          counts.instructors++;
-        } else if (user.accountType === "Student") {
-          counts.students++;
-        }
-        return counts;
+    const users = await User.aggregate([
+      {
+        $match: {
+          accountType: {
+            $in: ["Student", "Instructor"],
+          },
+        },
       },
-      { instructors: 0, students: 0 }
-    );
-
+      {
+        $group: {
+          _id: "$accountType",
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "Admin Dashboard Details",
-        data: {
-          users: allUsers,
-          courses: allCourses,
-          queries: allQuery,
-          totalStudents: students,
-          totalInstructors: instructors,
-          totalCourses: allCourses.length,
-        },
+        message: "Total no of Student and Instructor.",
+        data: users,
       })
     );
   }
 );
 
-export const deleteAccount = asyncHandler(
+export const getMostEnrolledCourses = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.currentUser;
-
-    const deletedAccount = await User.findByIdAndDelete(id);
-
+    const courses = await Course.aggregate([
+      {
+        $project: {
+          courseName: 1,
+          totalStudents: {
+            $size: "$studentEnrolled",
+          },
+        },
+      },
+      {
+        $sort: {
+          totalStudents: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: RESPONSE_MESSAGES.USERS.DELETED,
-        data: { deletedAccount },
+        message: "Most enrolled courses by student.",
+        data: courses,
       })
     );
   }

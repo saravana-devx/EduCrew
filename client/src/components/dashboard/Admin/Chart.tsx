@@ -13,6 +13,7 @@ import {
   TooltipItem,
   ArcElement,
 } from "chart.js"; // Import necessary components from chart.js
+import { ProfileAPI } from "../../../api/auth/ProfileAPI";
 
 // Register chart components
 ChartJS.register(
@@ -27,11 +28,11 @@ ChartJS.register(
   ArcElement
 );
 // Define types for course data and earnings
-interface CourseData {
-  courseName: string;
-  earnings: number;
-  studentCount: number;
-}
+// interface CourseData {
+//   courseName: string;
+//   earnings: number;
+//   studentCount: number;
+// }
 interface EarningsData {
   _id: string; // The month (year-month)
   count: number; // The total earnings for the month
@@ -40,15 +41,11 @@ interface EarningsData {
 export const PieChart = () => {
   const [Data, setData] = useState<EarningsData[]>([]);
   useEffect(() => {
-    // Fetch earnings data from an API or MongoDB server
-    // Replace this URL with your actual data endpoint
-    fetch("http://localhost:4000/api/v1/profile/get-total-student-instructor")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setData(data); // Store the fetched data in state
-      })
-      .catch((error) => console.error("Error fetching earnings data:", error));
+    async function getTotalUsersByStatus() {
+      const res = await ProfileAPI.getTotalUsersByStatus();
+      setData(res.data);
+    }
+    getTotalUsersByStatus();
   }, []);
   const chartData = {
     labels: Data.map((data) => data._id),
@@ -68,11 +65,17 @@ export const PieChart = () => {
   //   });
 
   return (
-    <div className="w-96 h-96">
-      <h2 className="text-xl font-bold text-indigo-400">
-        Distribution between Student and Instructor
-      </h2>
-      <Pie data={chartData} />
+    <div className="w-full flex justify-center items-center p-4">
+      {Data.length > 0 ? (
+        <Pie data={chartData} className="w-full max-w-3xl h-96 lg:h-auto" />
+      ) : (
+        <div className="flex flex-col justify-center items-center w-full h-[300px] sm:h-[400px] md:h-[500px]">
+          <p className="font-bold text-lg sm:text-xl md:text-2xl mb-6">
+            Loading data...
+          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+        </div>
+      )}
     </div>
   );
 };
@@ -84,19 +87,13 @@ type MostEnrolledCourses = {
 };
 
 export const EarningsByCourse: React.FC = () => {
-  const [earningsData, setEarningsData] = useState<MostEnrolledCourses[]>([]); // Type the state
-  //   const [data, setData] = useState<MostEnrolledCourses[]>([]);
+  const [earningsData, setEarningsData] = useState<MostEnrolledCourses[]>([]);
   useEffect(() => {
-    // Fetch earnings data from an API or MongoDB server
-    // Replace this URL with your actual data endpoint
-
-    fetch("http://localhost:4000/api/v1/profile/get-most-enrolled-courses")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setEarningsData(data); // Store the fetched data in state
-      })
-      .catch((error) => console.error("Error fetching earnings data:", error));
+    async function getMostEnrolledCourses() {
+      const res = await ProfileAPI.getMostEnrolledCourses();
+      setEarningsData(res.data);
+    }
+    getMostEnrolledCourses();
   }, []);
 
   // Prepare chart data
@@ -174,9 +171,9 @@ export const EarningsByCourse: React.FC = () => {
   };
 
   return (
-    <div className="w-full  p-4">
+    <div className="w-full flex justify-center items-center p-4">
       {earningsData.length > 0 ? (
-        <div>
+        <div className="w-full max-w-3xl">
           <Bar
             data={chartData}
             options={chartOptions}
@@ -185,7 +182,12 @@ export const EarningsByCourse: React.FC = () => {
           />
         </div>
       ) : (
-        <p className="text-center text-xl">Loading data...</p>
+        <div className="flex flex-col justify-center items-center w-full h-[300px] sm:h-[400px] md:h-[500px]">
+          <p className="font-bold text-lg sm:text-xl md:text-2xl mb-6">
+            Earnings By Course
+          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+        </div>
       )}
     </div>
   );

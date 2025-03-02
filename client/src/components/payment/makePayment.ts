@@ -18,7 +18,7 @@ export const makePayment = async (
 
   try {
     const response = await paymentAPI.createCheckOutSession(courseId);
-
+    console.log("response stripe -> ", response);
     // if (response.status !== 200) {
     //   throw new Error("Failed to create checkout session");
     // }

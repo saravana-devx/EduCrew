@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthAPI } from "../../../api/auth/AuthAPI";
-import PasswordForm from "../Templates/PasswordForm";
+import PasswordForm from "../authLayout/PasswordForm";
 
 const ResetForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -15,8 +15,8 @@ const ResetForm: React.FC = () => {
     newPassword: string;
     confirmPassword: string;
   }) => {
-    setLoading(true);
     try {
+      setLoading(true);
       await AuthAPI.resetForgetPassword(
         formData.newPassword,
         formData.confirmPassword,

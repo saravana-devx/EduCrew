@@ -10,25 +10,24 @@ import { CourseAPI } from "../../../api/course/CourseAPI";
 import { setCompletedVideo } from "../../../redux/slices/userSlice";
 import VideoJS from "./Video";
 import ReviewFormModal from "../../common/Rating/ReviewFormModal";
-import { SomethingWentWrong } from "../../common/error/SomethingWentWrong";
 import Content from "./Content";
 
 const ViewCourseVideos: React.FC = () => {
   const activeCourse = useAppSelector(getActiveCourse);
 
   const dispatch = useAppDispatch();
-  console.log("video ref -> ", activeCourse);
+  console.log("active course -> ", activeCourse);
   useEffect(() => {
     if (activeCourse?.content) {
       const firstSection = activeCourse.content[0];
       const firstSubsection = firstSection.subSection?.[0];
       dispatch(setActiveSubSection(firstSubsection));
-      console.log("first subSection -> ", firstSubsection);
+      // console.log("first subSection -> ", firstSubsection);
     }
   }, [activeCourse, dispatch]);
 
   const handleReviewSubmit = async (rating: number, review: string) => {
-    console.log("Review Submitted: ", { rating, review });
+    // console.log("Review Submitted: ", { rating, review });
     if (!activeCourse?._id) {
       console.error("Course ID is not available.");
       return;
@@ -45,7 +44,7 @@ const ViewCourseVideos: React.FC = () => {
 
   const handleVideoCompletion = async () => {
     if (activeCourse?._id) {
-      await CourseAPI.updateProgress(activeCourse._id,activeSubSection._id);
+      await CourseAPI.updateProgress(activeCourse._id, activeSubSection._id);
       // Mark the video as completed in your backend or update state
       dispatch(
         setCompletedVideo({
@@ -78,7 +77,7 @@ const ViewCourseVideos: React.FC = () => {
       playbackRateMenuButton: true,
     },
   };
-  console.log(videoJsOptions)
+  // console.log(videoJsOptions)
   return (
     <div className="max-w-9xl lg:px-12 mx-auto mt-8 flex flex-col xl:flex-row gap-x-4">
       <div className="w-full px-1 lg:w-[17/20] mx-auto xl:w-[13/20] overflow-hidden">
@@ -96,8 +95,13 @@ const ViewCourseVideos: React.FC = () => {
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center h-[450px] text-red-600">
-            <SomethingWentWrong />
+          <div className="flex flex-col items-center justify-center h-[450px] text-red-600">
+            <p className="text-lg font-semibold">
+              No video available for this section.
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              Please check back later or try refreshing the page.
+            </p>
           </div>
         )}
       </div>

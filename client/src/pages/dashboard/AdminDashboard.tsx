@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CourseTable from "../../components/dashboard/Admin/CoursesTable";
 import UserTable from "../../components/dashboard/Admin/UsersTable";
 import {
@@ -8,7 +8,6 @@ import {
 
 const AdminDashboard = () => {
   const [currentTab, setCurrentTab] = useState<"Courses" | "Users">("Courses");
-  console.log("current tab -> ", currentTab);
 
   return (
     <div className="container mx-auto w-full px-4 sm:px-6 lg:px-8">
@@ -49,7 +48,6 @@ const AdminDashboard = () => {
         </button>
       </div>
 
-      {/* Conditional Rendering for Tables */}
       <div className="my-6">
         {currentTab === "Courses" && <CourseTable />}
         {currentTab === "Users" && <UserTable />}

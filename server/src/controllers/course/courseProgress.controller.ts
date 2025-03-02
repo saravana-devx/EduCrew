@@ -10,24 +10,24 @@ import { HTTP_STATUS, RESPONSE_MESSAGES } from "../../utils/constant";
 import Student from "../../model/student";
 import CourseProgress from "../../model/courseProgress";
 import Course from "../../model/course";
-import { IStudent } from "../../interfaces/interface";
+
 export const getCourseProgress = asyncHandler(
   async (req: Request, res: Response) => {
+
     const studentId = req.currentUser.id;
     // Fetch the student's enrolled courses
-    const student = await Student.findById(studentId).populate(
-      "enrolledStudent"
-    );
+    const student = await Student.findById(studentId)
+
     if (!student || student.enrolledCourses.length === 0) {
       throw new ApiError({
         status: HTTP_STATUS.NOT_FOUND,
-        message: "Student not enrolled in any courses",
+        message: RESPONSE_MESSAGES.COURSES.USER_NOT_ENROLLED,
       });
     }
-
     const enrolledCourseIds = student.enrolledCourses.map(
       (id) => new mongoose.Types.ObjectId(id)
     );
+
 
     //Fetch course progress (completed videos)
     const courseProgressResults = await CourseProgress.aggregate([
@@ -45,7 +45,6 @@ export const getCourseProgress = asyncHandler(
         },
       },
     ]);
-
     //Fetch total videos for each course
     const totalVideosResults = await Course.aggregate([
       {
@@ -101,7 +100,7 @@ export const getCourseProgress = asyncHandler(
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "course progress details",
+        message: RESPONSE_MESSAGES.COURSES.COURSE_PROGRESS,
         data: {
           progressWithTotalVideos,
         },
@@ -109,6 +108,7 @@ export const getCourseProgress = asyncHandler(
     );
   }
 );
+
 
 // export const updateCourseProgress = asyncHandler(
 //   async (req: Request, res: Response) => {
@@ -176,14 +176,14 @@ export const updateCourseProgress = asyncHandler(
   async (req: Request, res: Response) => {
     const id = req.currentUser.id;
     const { courseId, subSectionId } = req.params;
-    console.log("courseId", courseId, " ", subSectionId);
     // Fetch the user
     const student = await Student.findById(id);
 
-    // // console.log("courseProgress -> ", student.courseProgress as unknown);
-
     if (!student) {
-      throw new Error("User not found");
+      throw new ApiError({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
+      });
     }
 
     // Check if progress for the course already exists

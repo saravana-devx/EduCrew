@@ -92,7 +92,6 @@ const EditProfile: React.FC = () => {
 
   const validateUserDetails = () => {
     const { additionalDetails } = userDetails;
-
     if (
       !additionalDetails.contactNumber ||
       !validateContactNumber(additionalDetails.contactNumber)
@@ -103,8 +102,6 @@ const EditProfile: React.FC = () => {
     if (!additionalDetails.dob || !validateDateOfBirth(additionalDetails.dob)) {
       return "Please provide a valid DOB";
     }
-
-    // return null;
   };
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -122,31 +119,22 @@ const EditProfile: React.FC = () => {
       formData.append("lastName", userDetails.lastName);
       formData.append("gender", userDetails.additionalDetails.gender || "");
       const dob = userDetails.additionalDetails.dob
-        ? new Date(userDetails.additionalDetails.dob) // Convert to Date object
+        ? new Date(userDetails.additionalDetails.dob)
         : null;
 
-      formData.append(
-        "dob",
-        dob ? dob.toISOString() : "" // Use toISOString if dob is a valid Date
-      );
+      formData.append("dob", dob ? dob.toISOString() : "");
       formData.append("about", userDetails.additionalDetails.about || "");
       formData.append(
         "contactNumber",
         userDetails.additionalDetails.contactNumber?.toString() || ""
       );
 
-      // Append image if it exists
       if (userDetails.image) {
         formData.append("image", userDetails.image);
       }
-      // console.log("FormData contents:");
-      // for (const [key, value] of formData.entries()) {
-      //   console.log(`${key}:`, value);
-      // }
-      // Send request
+
       const result = await ProfileAPI.updateProfile(formData);
       console.log("result-> ", result);
-      // Notify success (if needed)
       dispatch(setUserData(result.data.updatedProfile));
       toast.success("Profile updated successfully!");
       navigate("/profile");

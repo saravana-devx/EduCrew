@@ -5,7 +5,7 @@ import Spinner from "../../common/spinner/Spinner";
 interface PasswordFormProps {
   mode: "changePassword" | "forgetPassword";
   onSubmit: (formData: {
-    oldPassword?: string;
+    oldPassword: string;
     newPassword: string;
     confirmPassword: string;
   }) => Promise<void>;

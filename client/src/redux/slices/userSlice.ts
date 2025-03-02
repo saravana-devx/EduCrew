@@ -71,14 +71,6 @@ export const userSlice = createSlice({
         ...action.payload,
       };
     },
-    setUserDataNull: (state) => {
-      state.userDetails = initialState.userDetails;
-      state.courseProgress = initialState.courseProgress;
-      state.loggedIn = false;
-      state.token = "";
-      state.loading = false;
-    },
-
     setLoggedIn: (state, action: PayloadAction<boolean>) => {
       state.loggedIn = action.payload;
     },
@@ -123,6 +115,13 @@ export const userSlice = createSlice({
           completedVideos: [completedVideo],
         });
       }
+    },
+    setUserDataNull: (state) => {
+      state.userDetails = initialState.userDetails;
+      state.courseProgress = initialState.courseProgress;
+      state.loggedIn = false;
+      state.token = "";
+      state.loading = false;
     },
   },
 });

@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import { useAppDispatch } from "../../../hooks/redux.hook";
 import { AuthAPI } from "../../../api/auth/AuthAPI";
 
-import AuthTemplate from "../Templates/AuthTemplate";
+import AuthTemplate from "../authLayout/AuthTemplate";
 import { setLoading } from "../../../redux/slices/userSlice";
+import axios from "axios";
 
 const RegisterUserForm: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const RegisterUserForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      toast("passwords do not match");
+      toast.error("passwords do not match");
       return;
     }
 
@@ -44,24 +45,40 @@ const RegisterUserForm: React.FC = () => {
       password: formData.password,
       accountType: role,
     };
-    dispatch(setLoading(true));
-    AuthAPI.registerUser(userData)
-      .then((result) => {
-        toast.success("Check Your email to verify account");
-        console.log(result);
-        userData.password = "";
-        navigate("/open-gmail");
-        dispatch(setLoading(false));
-      })
-      .catch((error) => {
-        if (error.response.status === 409) {
-          toast.error("email already exists");
-          dispatch(setLoading(false));
-          navigate("/login");
-        } else {
-          navigate("/");
-        }
-      });
+    // dispatch(setLoading(true));
+    // await AuthAPI.registerUser(userData)
+    //   .then((result) => {
+    //     toast.success("Check Your email to verify account");
+    //     console.log(result);
+    //     userData.password = "";
+    //     navigate("/open-gmail");
+    //     dispatch(setLoading(false));
+    //   })
+    //   .catch((error) => {
+    //     if (error.response.status === 409) {
+    //       toast.error("email already exists");
+    //       dispatch(setLoading(false));
+    //       navigate("/login");
+    //     } else {
+    //       navigate("/");
+    //     }
+    //   });
+    try {
+      dispatch(setLoading(true));
+      await AuthAPI.registerUser(userData);
+      toast.success("Check your email to verify your account!");
+      userData.password = "";
+      navigate("/open-gmail");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        toast.error("Email already exists. Please log in.");
+        navigate("/login");
+      } else {
+        navigate("/");
+      }
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
   return (

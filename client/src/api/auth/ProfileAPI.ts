@@ -12,18 +12,18 @@ export const ProfileAPI = {
     return response.data;
   },
   updateProfile: async function (formData: FormData) {
-    console.log("FormData contents:");
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-    console.log("formData -> ", formData);
+    // console.log("FormData contents:");
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}:`, value);
+    // }
+    // console.log("formData -> ", formData);
     const response: AxiosResponse = await api.request({
       url: ProfileURL.updateProfile,
-      method: "POST",
+      method: "PUT",
       headers: getHeaders(),
       data: formData,
     });
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   },
   deleteAccount: async function () {
@@ -67,6 +67,38 @@ export const ProfileAPI = {
       headers: getHeaders(),
     });
     console.log(response.data);
+    return response.data;
+  },
+  getEarningsByMonth: async function () {
+    const response: AxiosResponse = await api.request({
+      url: ProfileURL.getEarningsByMonth,
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
+  getEarningByCourse: async function () {
+    const response: AxiosResponse = await api.request({
+      url: ProfileURL.getEarningByCourse,
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
+  getMostEnrolledCourses: async function () {
+    const response: AxiosResponse = await api.request({
+      url: ProfileURL.getMostEnrolledCourses,
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
+  getTotalUsersByStatus: async function () {
+    const response: AxiosResponse = await api.request({
+      url: ProfileURL.getTotalUsersByStatus,
+      method: "GET",
+      headers: getHeaders(),
+    });
     return response.data;
   },
 };

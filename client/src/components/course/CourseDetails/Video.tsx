@@ -2,8 +2,8 @@ import React, { useRef, useEffect } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import Player from "video.js/dist/types/player";
-import { useAppSelector } from "../../../hooks/redux.hook";
-import { getActiveSubSection } from "../../../redux/slices/courseDetailSlice";
+// import { useAppSelector } from "../../../hooks/redux.hook";
+// import { getActiveSubSection } from "../../../redux/slices/courseDetailSlice";
 
 type PlayerOptions = typeof videojs.options;
 
@@ -20,16 +20,16 @@ export const VideoJS: React.FC<VideoJSProps> = ({
 }) => {
   const videoRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<Player | null>(null);
-  const activeSubSection = useAppSelector((state) =>
-    getActiveSubSection(state)
-  );
+  // const activeSubSection = useAppSelector((state) =>
+  //   getActiveSubSection(state)
+  // );
   
-  const activeSubSectionRef = useRef(activeSubSection);
+  // const activeSubSectionRef = useRef(activeSubSection);
 
   // Keep the ref updated with the latest activeSubSection
-  useEffect(() => {
-    activeSubSectionRef.current = activeSubSection;
-  }, [activeSubSection]);
+  // useEffect(() => {
+  //   activeSubSectionRef.current = activeSubSection;
+  // }, [activeSubSection]);
 
   useEffect(() => {
     if (!playerRef.current && videoRef.current) {
@@ -52,12 +52,12 @@ export const VideoJS: React.FC<VideoJSProps> = ({
         const progress = (currentTime / duration) * 100;
 
         if (progress >= 90 && !onCompleteInvoked) {
-          console.log(
-            "active subSection at 90% completion -> ",
-            activeSubSectionRef.current._id,
-            Date.now().toString()
-          );
-          console.log("Video reached 90% completion in video.tsx!");
+          // console.log(
+          //   "active subSection at 90% completion -> ",
+          //   activeSubSectionRef.current._id,
+          //   Date.now().toString()
+          // );
+          // console.log("Video reached 90% completion in video.tsx!");
           onComplete?.(); // Notify parent component
           onCompleteInvoked = true; // Ensure this is triggered only once
         }

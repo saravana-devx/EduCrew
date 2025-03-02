@@ -1,71 +1,39 @@
 import express from "express";
 
 import {
-  getAdminDashboardDetails,
   getInstructorDashboard,
   getProfileDetails,
   updateProfile,
   deleteAccount,
   getCoursesInfoForAdmin,
   getUsersInfoForAdmin,
+  getTotalStudentAndInstructor,
+  getEarningByCourses,
+  getEarningByMonth,
+  getMostEnrolledCourses,
 } from "../controllers/profile/profile.controller";
 
 import { admin, auth, instructor } from "../middlewares/auth";
-import User from "../model/User";
-import Course from "../model/course";
+
+import upload from "../middlewares/multer";
 
 const router = express.Router();
 
 router.get("/profile-details", auth, getProfileDetails);
-router.post("/update-profile", auth, updateProfile);
+router.put("/update-profile", upload.single("image"), auth, updateProfile);
 router.delete("/delete-account", auth, deleteAccount);
 
+//Data for Instructor Dashboard
 router.get("/instructor-dashboard", auth, instructor, getInstructorDashboard);
+router.get("/get-earnings-by-month", auth, instructor, getEarningByMonth);
+router.get("/get-earnings-by-course", auth, instructor, getEarningByCourses);
 
+//Data for Admin Dashboard
 router.get("/getCoursesInfoForAdmin", auth, admin, getCoursesInfoForAdmin);
 router.get("/getUsersInfoForAdmin", auth, admin, getUsersInfoForAdmin);
-router.get("/get-total-student-instructor", async (req, res) => {
-  const info = await User.aggregate([
-    {
-      $match: {
-        accountType: {
-          $in: ["Student", "Instructor"],
-        },
-      },
-    },
-    {
-      $group: {
-        _id: "$accountType",
-        count: {
-          $sum: 1,
-        },
-      },
-    },
-  ]);
-  res.json(info);
-});
-router.get("/get-most-enrolled-courses", async (req, res) => {
-  const info = await Course.aggregate([
-    {
-      $project: {
-        courseName: 1,
-        totalStudents: {
-          $size: "$studentEnrolled",
-        },
-      },
-    },
-    {
-      $sort: {
-        totalStudents: -1,
-      },
-    },
-    {
-      $limit: 10,
-    },
-  ]);
-  res.json(info);
-});
+router.get("/get-total-student-instructor", getTotalStudentAndInstructor);
+router.get("/get-most-enrolled-courses", getMostEnrolledCourses);
 
-router.get("/admin-dashboard", auth, admin, getAdminDashboardDetails);
+// router.get("/admin-dashboard", auth, admin, getAdminDashboardDetails);
 
 export default router;

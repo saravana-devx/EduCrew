@@ -194,31 +194,44 @@ export const getAllCourses = asyncHandler(
   }
 );
 
-export const getCourses = asyncHandler(async (req: Request, res: Response) => {
-  console.log("Api started")
-  const page: number = Number(req.query.page) || 1;
-  const limit: number = Number(req.query.limit) || 6;
+export const getPagination = asyncHandler(
+  async (req: Request, res: Response) => {
+    const page: number = Number(req.query.page) || 1;
+    const limit: number = Number(req.query.limit) || 6;
 
-  if (isNaN(page) || isNaN(limit)) {
-    return res.status(400).json({ message: "Invalid page or limit value" });
+    if (isNaN(page) || isNaN(limit)) {
+      throw new ApiError({
+        status: HTTP_STATUS.CONFLICT,
+        message: "Invalid page or limit value",
+      });
+    }
+
+    //To eliminate previous page courses
+    const startIndex = (page - 1) * limit;
+
+    const courses = await Course.find()
+      .populate({
+        path: "instructor",
+        model: "User",
+        select: "firstName lastName image",
+      })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+    const totalCourses = await Course.countDocuments().exec();
+
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: `Displaying page ${page} with a limit of ${limit} courses per page.`,
+        data: {
+          courses,
+          totalCourses,
+        },
+      })
+    );
   }
-  console.log("page and limit -> ", page, limit);
-  //To eliminate previous page courses
-  const startIndex = (page - 1) * limit;
-
-  const courses = await Course.find().limit(limit).skip(startIndex).exec();
-  // const totalCourses = await Course.countDocuments().exec();
-
-  res.status(HTTP_STATUS.OK).json(
-    new ApiResponse({
-      status: HTTP_STATUS.OK,
-      message: `Displaying page ${page} with a limit of ${limit} courses per page.`,
-      data: {
-        courses,
-      },
-    })
-  );
-});
+);
 
 export const getCourseByUser = asyncHandler(
   async (req: Request, res: Response) => {
@@ -249,7 +262,7 @@ export const getCourseByUser = asyncHandler(
       return res.status(HTTP_STATUS.OK).json(
         new ApiResponse({
           status: HTTP_STATUS.OK,
-          message: "No courses enrolled",
+          message: RESPONSE_MESSAGES.COURSES.USER_NOT_ENROLLED,
         })
       );
     }
@@ -288,7 +301,7 @@ export const updateCourseStatus = asyncHandler(
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "Course status updated successfully",
+        message: RESPONSE_MESSAGES.COURSES.COURSE_STATUS_UPDATED,
         data: course,
       })
     );

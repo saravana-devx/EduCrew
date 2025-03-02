@@ -45,7 +45,7 @@ const AuthTemplate: React.FC<AuthProps> = ({
   const loading = useAppSelector(getLoading);
   return (
     <div
-      className={`flex justify-center items-center bg-gray-100 p-4 lg:h-[820px] ${
+      className={`flex justify-center items-center p-4 lg:h-[820px] ${
         isSignUp ? "h-[920px]" : "h-[520px]"
       }`}
     >

@@ -64,7 +64,7 @@ const CourseSubSection: React.FC<CourseSubSectionProps> = ({
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.size > 30 * 1024 * 1024) {
-      toast.warn("File is too big!");
+      toast.warn("Video is too big!");
       return;
     }
     if (file) {

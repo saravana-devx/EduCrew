@@ -12,6 +12,7 @@ const uploadMediaToCloudinary = async (filePath: string) => {
     };
     const result = await cloudinary.uploader.upload(filePath, options);
     console.log(result);
+    console.log("filepath -> ", filePath);
     fs.unlinkSync(filePath);
     return result;
   } catch (error) {

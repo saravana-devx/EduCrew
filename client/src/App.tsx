@@ -57,7 +57,7 @@ interface DecodedToken {
 
 function App() {
   const token = localStorage.getItem("token");
-  console.log(token);
+  // console.log(token);
   const isLoggedIn = useAppSelector(loggedInStatus);
   let exp = 0;
 
@@ -73,16 +73,6 @@ function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // if (isLoggedIn && token == null) {
-  //   dispatch(setLoggedIn(false));
-  //   dispatch(setLoggedIn(false));
-  //   dispatch(setUserDataNull());
-  //   localStorage.removeItem("persist:user");
-  //   localStorage.clear();
-  //   navigate("/");
-  //   dispatch({ type: "RESET" });
-  // }
-
   useEffect(() => {
     if (exp > 0) {
       const currentTime = Math.floor(Date.now() / 1000);
@@ -96,6 +86,7 @@ function App() {
       }
     }
   }, [exp, dispatch, navigate]);
+
   return (
     <div className="w-full h-full bg-white overflow-x-hidden">
       <Navbar />

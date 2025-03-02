@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import LoadingCard from "../../components/course/LoadingCard";
 import {
   Course,
-  getCourses,
   getLoading,
   setCourses,
   setLoading,
@@ -17,84 +16,83 @@ import axios from "axios";
 
 const Courses: React.FC = () => {
   const [category, setCategory] = useState<string>("");
-  const [categoryCourses, setCategoryCourses] = useState<Course[] | null>([]);
-
+  const [categoryCourses, setCategoryCourses] = useState<Course[] | null>(null);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const handlePageClick = (currentPage: number) => {
-    axios
-      .get(
-        `http://localhost:4000/api/v1/course/api/get-courses?limit=2&page=${currentPage}`
-      )
-      .then((response) => {
-        console.log("data -> ", response.data); // Logs the whole response
-        console.log("courses -> ", response.data.data.courses); // ✅ Corrected access
-
-        dispatch(setCourses(response.data.data.courses)); // ✅ Fix: Ensure correct access
-      })
-      .catch((error) => console.error("Error fetching courses:", error));
-    setPage(currentPage);
-  };
+  const limit = 8;
 
   const dispatch = useAppDispatch();
+  const loading = useAppSelector(getLoading);
+  const courses = useAppSelector((state) => state.courseDetail.courses); // Assuming courses are stored in Redux
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCategory(e.target.value);
+  // Fetch all courses
+  const fetchCourses = async (currentPage: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/v1/course/api/get-courses?limit=${limit}&page=${currentPage}`
+      );
+
+      const totalCourses = response.data.data.totalCourses;
+      setTotalPages(Math.ceil(totalCourses / limit));
+      dispatch(setCourses(response.data.data.courses));
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
   };
 
-  const courses = useAppSelector(getCourses);
-
-  useEffect(() => {
-    if (category === "") {
-      setCategoryCourses(courses);
-    } else {
+  // Fetch courses by category
+  const fetchCategoryCourses = async (selectedCategory: string) => {
+    try {
       dispatch(setLoading(true));
-      CourseAPI.getCourseByCategory(category)
-        .then((result) => {
-          setCategoryCourses(result.data.courses);
-          dispatch(setLoading(false));
-        })
-        .catch((error) => {
-          dispatch(setLoading(false));
-          if (error.response.data.status === 404) {
-            setCategoryCourses(null);
-          }
-        });
+      const result = await CourseAPI.getCourseByCategory(selectedCategory);
+      setCategoryCourses(result.data.courses);
+      setTotalPages(1);
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      if (error.response?.data?.status === 404) {
+        setCategoryCourses([]);
+        setTotalPages(1);
+      }
     }
-  }, [category, courses]);
+  };
 
-  // useEffect(() => {
-  //   if (courses.length === 0) {
-  //     dispatch(setLoading(true));
-  //     CourseAPI.getAllCourses()
-  //       .then((result) => {
-  //         console.log("result of getAllCourses API -> ", result);
-  //         dispatch(setCourses(result.data.courses));
-  //         console.log(courses);
-  //       })
-  //       .catch((error) => {
-  //         dispatch(setLoading(false));
-  //         console.error("Failed to fetch courses: ", error);
-  //       });
-  //   }
-  // }, [dispatch, courses]);
-  const loading = useAppSelector(getLoading);
+  // Handle category selection
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCategory = e.target.value;
+    setCategory(selectedCategory);
+    setPage(1);
+
+    if (selectedCategory === "") {
+      fetchCourses(1);
+      setCategoryCourses(null); // Reset categoryCourses to null when fetching all courses
+    } else {
+      fetchCategoryCourses(selectedCategory);
+    }
+  };
+
+  // Handle pagination click
+  const handlePageClick = (currentPage: number) => {
+    setPage(currentPage);
+
+    if (category === "") {
+      fetchCourses(currentPage);
+    } else {
+      fetchCategoryCourses(category);
+    }
+  };
+
+  // Initial fetch (All Categories)
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/api/v1/course/api/get-courses?limit=2&page=1")
-      .then((response) => {
-        console.log("data -> ", response.data); // Logs the whole response
-        console.log("courses -> ", response.data.data.courses); // ✅ Corrected access
-
-        dispatch(setCourses(response.data.data.courses)); // ✅ Fix: Ensure correct access
-      })
-      .catch((error) => console.error("Error fetching courses:", error));
+    fetchCourses(1);
   }, [dispatch]);
 
   return (
     <div className="max-w-7xl min-h-screen h-full mx-auto flex flex-col items-start">
       <SearchInput />
+
+      {/* Category Dropdown */}
       <div className="flex flex-col ms-8 lg:ms-12 xl:ms-0">
         <label className="flex gap-x-4 items-center text-sm font-medium text-gray-700">
           Select Category
@@ -116,18 +114,29 @@ const Courses: React.FC = () => {
           <option value="Finance">Finance</option>
         </select>
       </div>
-      {loading ? (
-        <LoadingCard />
-      ) : categoryCourses && categoryCourses.length > 0 ? (
-        <CourseCard courses={categoryCourses} />
-      ) : (
-        <CategoryCourseNotFoundError />
+
+      {/* Course List */}
+      {loading && <LoadingCard />}
+
+      {!loading &&
+        (categoryCourses !== null ? (
+          categoryCourses.length > 0 ? (
+            <CourseCard courses={categoryCourses} />
+          ) : (
+            <CategoryCourseNotFoundError />
+          )
+        ) : (
+          <CourseCard courses={courses} />
+        ))}
+
+      {/* Pagination Component */}
+      {totalPages > 1 && (
+        <Pagination
+          totalPages={totalPages}
+          currentPage={page}
+          handlePageClick={handlePageClick}
+        />
       )}
-      <Pagination
-        totalPages={totalPages}
-        currentPage={page}
-        handlePageClick={handlePageClick}
-      />
     </div>
   );
 };

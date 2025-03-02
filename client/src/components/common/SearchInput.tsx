@@ -7,6 +7,7 @@ import {
   setLoading,
   setSearchResults,
 } from "../../redux/slices/courseDetailSlice";
+import axios from "axios";
 
 const SearchInput: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,28 +23,18 @@ const SearchInput: React.FC = () => {
   const performSearch = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    dispatch(setLoading(true));
-    await CourseAPI.getSearchResult(search.query)
-      .then((result) => {
-        if (result.success) {
-          dispatch(setSearchResults(result.data.searchResults));
-        }
-      })
-      .catch((error) => {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.status === 404
-        ) {
-          dispatch(setSearchResults([]));
-        } else {
-          dispatch(setSearchResults([]));
-        }
-      })
-      .finally(() => {
-        navigate(`/search?query=${search.query}`);
-        dispatch(setLoading(false));
-      });
+    try {
+      dispatch(setLoading(true));
+      const result = await CourseAPI.getSearchResult(search.query);
+      dispatch(setSearchResults(result.data.searchResults));
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        dispatch(setSearchResults([]));
+      }
+    } finally {
+      navigate(`/search?query=${search.query}`);
+      dispatch(setLoading(false));
+    }
   };
 
   return (

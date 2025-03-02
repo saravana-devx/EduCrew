@@ -6,7 +6,6 @@ import { ApiError } from "../../utils/apiResponseHandler/apiError";
 import { HTTP_STATUS, RESPONSE_MESSAGES } from "../../utils/constant";
 
 import Contact from "../../model/contact";
-import { ApiResponse } from "../../utils/apiResponseHandler/apiResponse";
 
 export const postQuery = asyncHandler(async (req: Request, res: Response) => {
   const { firstName, lastName, email, phone, message } = req.body;
@@ -28,7 +27,7 @@ export const postQuery = asyncHandler(async (req: Request, res: Response) => {
 
   res.status(HTTP_STATUS.CREATED).json({
     status: HTTP_STATUS.CREATED,
-    message: "Query sent successfully",
+    message: RESPONSE_MESSAGES.CONTACT.QUERY_SENT,
     data: newQuery,
   });
 });
@@ -37,24 +36,23 @@ export const deleteQuery = asyncHandler(async (req: Request, res: Response) => {
   const { queryId } = req.params;
 
   if (!queryId) {
-    return res.status(400).json({
-      status: "error",
-      message: "Query ID is required",
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
     });
   }
 
   const deletedQuery = await Contact.findByIdAndDelete(queryId);
 
   if (!deletedQuery) {
-    return res.status(404).json({
-      status: "error",
-      message: "Query not found",
+    throw new ApiError({
+      status: HTTP_STATUS.NOT_FOUND,
+      message: RESPONSE_MESSAGES.CONTACT.NOT_FOUND,
     });
   }
 
-  res.status(200).json({
-    status: "success",
-    message: "Query deleted successfully",
+  res.status(HTTP_STATUS.OK).json({
+    status: HTTP_STATUS.OK,
+    message: RESPONSE_MESSAGES.CONTACT.QUERY_DELETED,
   });
 });
-

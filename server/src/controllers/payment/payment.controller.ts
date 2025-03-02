@@ -24,7 +24,7 @@ export const createCheckOutSession = async (req: Request, res: Response) => {
   if (!courseId) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Course ID is required",
+      message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
     });
   }
 
@@ -40,21 +40,22 @@ export const createCheckOutSession = async (req: Request, res: Response) => {
   if (!student) {
     throw new ApiError({
       status: HTTP_STATUS.NOT_FOUND,
-      message: "Student not found",
+      message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
     });
   }
 
   if (student.enrolledCourses.length < 0) {
     throw new ApiError({
       status: HTTP_STATUS.FORBIDDEN,
-      message: "You're already enrolled in this course",
+      message: RESPONSE_MESSAGES.ENROLLMENTS.ALREADY_ENROLLED,
     });
   }
 
   if (!secretKey) {
-    throw new Error(
-      "Stripe secret key is not defined in environment variables."
-    );
+    throw new ApiError({
+      status: HTTP_STATUS.FORBIDDEN,
+      message: RESPONSE_MESSAGES.PAYMENT.KEY_NOT_FOUND,
+    });
   }
 
   const stripe = new Stripe(secretKey);
@@ -133,11 +134,12 @@ export const purchaseCourse = asyncHandler(
     const templatePath = path.join(
       __dirname,
       "..",
+      "..",
       "utils",
+      "email",
       "templates",
-      "PurchasedCourse.html"
+      "purchasedCourse.html"
     );
-
     let emailHtml = fs.readFileSync(templatePath, "utf8");
     // Replace all occurrences of {{verificationLink}} with the actual verification link
     emailHtml = emailHtml.replace(/{{courseName}}/g, course.courseName);
@@ -147,7 +149,7 @@ export const purchaseCourse = asyncHandler(
     res.status(HTTP_STATUS.OK).json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "Course purchased successfully",
+        message: RESPONSE_MESSAGES.PAYMENT.PURCHASED,
         data: {
           enrolledInCourse,
           studentEnrolled,

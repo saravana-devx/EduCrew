@@ -23,10 +23,16 @@ export const ProfileURL = {
   profileDetails: "/profile/profile-details",
   updateProfile: "/profile/update-profile",
   deleteAccount: "/profile/delete-count",
-  getInstructorDashboardData: "/profile/instructor-dashboard",
+
   getAdminDashboardData: "/profile/admin-dashboard",
   getCoursesInfoForAdmin: "/profile/getCoursesInfoForAdmin",
   getUsersInfoForAdmin: "/profile/getUsersInfoForAdmin",
+  getMostEnrolledCourses: "profile/get-most-enrolled-courses",
+  getTotalUsersByStatus: "/profile/get-total-student-instructor",
+
+  getInstructorDashboardData: "/profile/instructor-dashboard",
+  getEarningsByMonth: "/profile/get-earnings-by-month",
+  getEarningByCourse: "/profile/get-earnings-by-course",
 };
 
 export const CourseURL = {
@@ -62,13 +68,13 @@ export const SubSectionURL = {
 
 export const paymentUrl = {
   createCheckOutSession: "/payment/create-checkout-session",
-  purchaseCourse: "/payment-course",
+  purchaseCourse: "/payment/purchase-course",
 };
 
 export const RatingURL = {
-  createRatingAndReview: "/rating/add-rating",
-  getAverageRating: "/rating/average-rating",
-  getAllRatingByCourse: "/rating/get-rating-by-course",
+  createRatingAndReview: "/rating-and-review/add-rating",
+  getAverageRating: "/rating-and-review/average-rating",
+  getAllRatingByCourse: "/rating-and-review/get-rating-by-course",
 };
 
 export const ContactURL = {

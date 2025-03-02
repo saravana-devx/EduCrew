@@ -22,11 +22,9 @@ const ProfileDetail: React.FC = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       dispatch(setLoading(true));
-
-      await ProfileAPI.profileDetails().then((result) => {
-        dispatch(setUserData(result.data.userDetails));
-        dispatch(setLoading(false));
-      });
+      const result = await ProfileAPI.profileDetails();
+      console.log(result);
+      dispatch(setUserData(result.data.userDetails));
       dispatch(setLoading(false));
     };
 
@@ -34,13 +32,12 @@ const ProfileDetail: React.FC = () => {
   }, [dispatch]);
 
   const handleDeleteAccount = async () => {
-    await ProfileAPI.deleteAccount().then((result) => {
-      console.log(result.data);
-      dispatch(setUserDataNull());
-      dispatch({ type: "RESET" });
-      localStorage.clear();
-      toast.success("Account Deleted Successfully");
-    });
+    const result = await ProfileAPI.deleteAccount();
+    console.log(result.data);
+    dispatch(setUserDataNull());
+    dispatch({ type: "RESET" });
+    localStorage.clear();
+    toast.success("Account Deleted Successfully");
   };
 
   return (

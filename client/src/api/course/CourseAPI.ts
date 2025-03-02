@@ -113,9 +113,9 @@ export const CourseAPI = {
     return response.data;
   },
 
-  getEnrolledCourses: async function (courseId: string) {
+  getEnrolledCourses: async function () {
     const response: AxiosResponse = await api.request({
-      url: CourseURL.getEnrolledCourses + `/${courseId}`,
+      url: CourseURL.getEnrolledCourses,
       method: "GET",
       headers: getHeaders(),
     });
