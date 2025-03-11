@@ -1,4 +1,4 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 
 import asyncHandler from "../../middlewares/asyncHandler";
 
@@ -47,7 +47,6 @@ export const updateProfile = asyncHandler(
         message: RESPONSE_MESSAGES.USERS.NO_DATA_PROVIDED,
       });
     }
-    console.log("new user data =? ", req.body)
     const { firstName, lastName, gender, dob, about, contactNumber } = req.body;
     const user = req.currentUser;
 
@@ -166,7 +165,7 @@ export const getInstructorDashboard = asyncHandler(
     const courseData = await Course.aggregate(pipeline);
     if (!courseData) {
       throw new ApiError({
-        status: HTTP_STATUS.BAD_REQUEST,
+        status: HTTP_STATUS.NOT_FOUND,
         message: RESPONSE_MESSAGES.USERS.NO_COURSE_CREATED,
       });
     }

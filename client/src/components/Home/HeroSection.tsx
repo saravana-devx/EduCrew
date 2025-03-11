@@ -6,7 +6,6 @@ import heroSectionImage from "../../assets/images/heroSectionImage.png";
 const HeroSection: React.FC = () => {
   return (
     <div className="w-full h-auto md:h-[580px] flex flex-col md:flex-row bg-gradient-to-r from-indigo-100 to-blue-200">
-      {/* Left Side: Text Section */}
       <div className="w-full animate-slideInLeft mx-auto md:w-1/2 2xl:w-2/6 flex flex-col justify-center items-center md:items-start text-center md:text-left md:mr-14  xl:mr-28 text-slate-800 p-4 md:p-8 ">
         <p className="text-lg  font-medium">100% QUALITY COURSES</p>
         <h1 className="text-3xl md:text-4xl mt-6 md:mt-4 font-bold w-10/12 md:w-full leading-tight">

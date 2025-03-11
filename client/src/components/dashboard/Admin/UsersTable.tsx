@@ -11,11 +11,8 @@ import {
 } from "@tanstack/react-table";
 import { Fragment } from "react";
 import TableComponent from "../tableComponent";
-import {
-  getUsers,
-  setUsers,
-} from "../../../redux/slices/AdminDashboardSlice";
-import { toast } from "react-toastify";
+import { getUsers, setUsers } from "../../../redux/slices/AdminDashboardSlice";
+
 import { ProfileAPI } from "../../../api/auth/ProfileAPI";
 
 const UserTable: React.FC = () => {
@@ -23,21 +20,10 @@ const UserTable: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    ProfileAPI.getUsersInfoForAdmin()
-      .then((result) => {
-        if (result && result.data) {
-          dispatch(setUsers(result.data.users));
-        } else {
-          toast.error("Invalid response structure");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 404) {
-          toast.error("You haven't created a course yet");
-        } else {
-          toast.error("Failed to fetch instructor data");
-        }
-      });
+    (async function () {
+      const result = await ProfileAPI.getUsersInfoForAdmin();
+      dispatch(setUsers(result.data.users));
+    })();
   }, [dispatch]);
 
   const [query, setQuery] = useState("");

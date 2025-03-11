@@ -78,7 +78,6 @@ const BasicInformation: React.FC = () => {
       });
     }
   }, [course]);
-  // console.log("course data sjdfjdj -> ", courseData);
   const [newWhatYouWillLearn, setNewWhatYouWillLearn] = useState("");
 
   const handleInputChange = (
@@ -94,9 +93,7 @@ const BasicInformation: React.FC = () => {
   };
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log("under handle thumbnail change ", e);
     const file = e.target.files?.[0];
-    // console.log("file  new -> ", file);
     if (file) {
       setCourseData((prevData) => ({
         ...prevData,
@@ -164,11 +161,15 @@ const BasicInformation: React.FC = () => {
         dispatch(setStep(2));
       }
 
-      dispatch(setStep(2)); // Move to the next step in the process
-    } catch (error) {
-      toast.error("Failed to create or update course."); // General error message
-      console.error(error);
-      // console.log(error)
+      dispatch(setStep(2)); // Move to the next step in the Form
+    } catch (error: unknown) {
+      console.log(error);
+      if (courseData._id) {
+        toast.error("Failed to update course.");
+      } else {
+        toast.error("Failed to create course.");
+      }
+    } finally {
       dispatch(setLoading(false));
     }
   };

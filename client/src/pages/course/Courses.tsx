@@ -20,24 +20,23 @@ const Courses: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const limit = 8;
-
   const dispatch = useAppDispatch();
   const loading = useAppSelector(getLoading);
   const courses = useAppSelector((state) => state.courseDetail.courses); // Assuming courses are stored in Redux
 
-  // Fetch all courses
-  const fetchCourses = async (currentPage: number) => {
+  // Fetch all courses By Page number
+  const fetchCoursesByPageNo = async (page: number) => {
+    const limit = 8;
     try {
-      const response = await axios.get(
-        `http://localhost:4000/api/v1/course/api/get-courses?limit=${limit}&page=${currentPage}`
-      );
-
-      const totalCourses = response.data.data.totalCourses;
+      dispatch(setLoading(true));
+      const response = await CourseAPI.getCourseByPage(limit, page);
+      const totalCourses = response.data.totalCourses;
       setTotalPages(Math.ceil(totalCourses / limit));
-      dispatch(setCourses(response.data.data.courses));
-    } catch (error) {
-      console.error("Error fetching courses:", error);
+      dispatch(setCourses(response.data.courses));
+    } catch (error: unknown) {
+      console.error(error);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -45,16 +44,18 @@ const Courses: React.FC = () => {
   const fetchCategoryCourses = async (selectedCategory: string) => {
     try {
       dispatch(setLoading(true));
-      const result = await CourseAPI.getCourseByCategory(selectedCategory);
-      setCategoryCourses(result.data.courses);
+      const response = await CourseAPI.getCourseByCategory(selectedCategory);
+      setCategoryCourses(response.data.courses);
       setTotalPages(1);
-      dispatch(setLoading(false));
     } catch (error) {
-      dispatch(setLoading(false));
-      if (error.response?.data?.status === 404) {
-        setCategoryCourses([]);
-        setTotalPages(1);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          setCategoryCourses([]);
+          setTotalPages(1);
+        }
       }
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -65,8 +66,8 @@ const Courses: React.FC = () => {
     setPage(1);
 
     if (selectedCategory === "") {
-      fetchCourses(1);
       setCategoryCourses(null); // Reset categoryCourses to null when fetching all courses
+      fetchCoursesByPageNo(1);
     } else {
       fetchCategoryCourses(selectedCategory);
     }
@@ -77,7 +78,7 @@ const Courses: React.FC = () => {
     setPage(currentPage);
 
     if (category === "") {
-      fetchCourses(currentPage);
+      fetchCoursesByPageNo(currentPage);
     } else {
       fetchCategoryCourses(category);
     }
@@ -85,14 +86,13 @@ const Courses: React.FC = () => {
 
   // Initial fetch (All Categories)
   useEffect(() => {
-    fetchCourses(1);
+    fetchCoursesByPageNo(1);
   }, [dispatch]);
 
   return (
     <div className="max-w-7xl min-h-screen h-full mx-auto flex flex-col items-start">
       <SearchInput />
 
-      {/* Category Dropdown */}
       <div className="flex flex-col ms-8 lg:ms-12 xl:ms-0">
         <label className="flex gap-x-4 items-center text-sm font-medium text-gray-700">
           Select Category
@@ -115,7 +115,6 @@ const Courses: React.FC = () => {
         </select>
       </div>
 
-      {/* Course List */}
       {loading && <LoadingCard />}
 
       {!loading &&

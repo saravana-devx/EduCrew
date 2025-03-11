@@ -27,7 +27,7 @@ const SearchInput: React.FC = () => {
       dispatch(setLoading(true));
       const result = await CourseAPI.getSearchResult(search.query);
       dispatch(setSearchResults(result.data.searchResults));
-    } catch (error) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         dispatch(setSearchResults([]));
       }

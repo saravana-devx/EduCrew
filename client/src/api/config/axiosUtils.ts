@@ -43,7 +43,8 @@ export const CourseURL = {
   deleteCourseByAdmin: "/course/delete-course-by-admin",
 
   getTopCourses: "/course/top-courses",
-  getAllCourses: "/course/get-all-courses",
+  // getAllCourses: "/course/get-all-courses",
+  getCourseByPage : "/course/get-courses",
   getCourseByCategory: "/course/category",
   getSearchResult: "/course/search",
   getCourseById: "/course",

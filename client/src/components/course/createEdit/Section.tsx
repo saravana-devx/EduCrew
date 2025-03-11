@@ -58,20 +58,24 @@ const Content: React.FC = () => {
             updatedSection: response.data.updatedSection,
           })
         );
-        toast.success("Module updated successfully");
+        toast.success("Section updated successfully");
       } else {
         const response = await SectionAPI.createSection(
           course._id,
           sectionName
         );
         dispatch(addSection(response.data.section));
-        toast.success("Module created successfully");
+        toast.success("Section created successfully");
       }
       setSectionName("");
       setEditSectionId(null);
-    } catch (error) {
-      console.error("Section operation failed:", error);
-      toast.error("Failed to perform section operation");
+    } catch (error: unknown) {
+      console.log(error);
+      if (editSectionId) {
+        toast.error("Failed to update Section.");
+      } else {
+        toast.error("Failed to create Section.");
+      }
     }
   };
 

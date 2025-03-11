@@ -16,11 +16,12 @@ import { CourseAPI } from "../../api/course/CourseAPI";
 import { RatingAndReviewAPI } from "../../api/rating/RatingAPI";
 import SearchInput from "../../components/common/SearchInput";
 import { makePayment } from "../../components/payment/makePayment";
-import DisplayRating from "../../components/common/RatingAndReview/DisplayRating";
+import DisplayRating from "../../components/common/DisplayReview/DisplayRating";
 import dateFormatter from "../../utils/dateFormatter";
-import ReviewCard from "../../components/common/RatingAndReview/ReviewCard";
+import ReviewCard from "../../components/common/DisplayReview/ReviewCard";
 import Content from "../../components/course/CourseDetails/Content";
 import { NoCourseFound } from "../../components/common/error/ErrorPage";
+import axios from "axios";
 
 const createSlug = (title: string) =>
   title
@@ -49,11 +50,21 @@ const Course: React.FC = () => {
 
   const { courseId } = useParams();
   useEffect(() => {
-    dispatch(setLoading(false));
     const getCourseDetails = async (courseId: string) => {
-      dispatch(setActiveCourse(null));
-      const response = await CourseAPI.getCourseById(courseId);
-      dispatch(setActiveCourse(response.data.course));
+      try {
+        dispatch(setLoading(true));
+        dispatch(setActiveCourse(null));
+        const response = await CourseAPI.getCourseById(courseId);
+        dispatch(setActiveCourse(response.data.course));
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 404) {
+            toast.error("Course Not found");
+          }
+        }
+      } finally {
+        setLoading(false);
+      }
     };
 
     const fetchRating = async (courseId: string) => {
@@ -63,7 +74,6 @@ const Course: React.FC = () => {
       } catch (error) {
         console.error("Error fetching rating:", error);
         setRating(0);
-        setLoading(false);
       }
     };
 
@@ -102,7 +112,6 @@ const Course: React.FC = () => {
     <div className="max-w-7xl mx-auto p-6 flex flex-col items-center">
       <div className="w-full flex flex-col md:flex-row gap-8">
         <div className={`w-full ${hasPurchased ? "lg:text-center" : ""}`}>
-          {/* Course Thumbnail */}
           <img
             src={activeCourse.thumbnail}
             alt={activeCourse.courseName || "Course Image"}
@@ -155,7 +164,6 @@ const Course: React.FC = () => {
               <span className="text-lg font-semibold text-indigo-400">
                 Updated At&nbsp; : &nbsp;
               </span>
-              {/* <DateFormatter dateString={activeCourse.updatedAt} /> */}
               {dateFormatter(activeCourse.updatedAt)}
             </p>
 
@@ -166,7 +174,6 @@ const Course: React.FC = () => {
               English
             </p>
           </div>
-          {/* Course Description */}
           <div className="mt-6 text-left">
             <h2 className="text-2xl font-semibold mb-4">Description</h2>
             <p className="text-gray-700 leading-relaxed">

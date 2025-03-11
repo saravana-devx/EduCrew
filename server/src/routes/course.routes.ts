@@ -78,6 +78,7 @@ router.post(
 
 router.get("/get-course-progress", auth, student, getCourseProgress);
 router.get("/enrolled-courses", auth, student, getCourseByUser);
+router.get("/get-courses", getPagination);
 router.get("/top-courses", getTopCourses);
 router.get("/get-all-courses", getAllCourses);
 router.get("/category/:category", getCourseByCategory);
@@ -114,7 +115,5 @@ router.patch(
   updateSubSection
 );
 router.post("/delete-subSection/:sectionId/:subSectionId", deleteSubSection);
-
-router.get("/api/get-courses", getPagination);
 
 export default router;

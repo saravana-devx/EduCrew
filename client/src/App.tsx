@@ -19,8 +19,6 @@ import ChangePassword from "./components/auth/ResetPassword/ChangePassword";
 import About from "./pages/About";
 import ContactPage from "./pages/Contact";
 
-import { PageNotFoundError } from "./components/common/error/ErrorPage";
-
 import Navbar from "./components/common/headerFooter/Header";
 import Footer from "./components/common/headerFooter/Footer";
 
@@ -41,6 +39,9 @@ import Courses from "./pages/course/Courses";
 import CourseCreationPage from "./pages/course/CourseCreation";
 import ViewCourseVideos from "./components/course/CourseDetails/ViewCourseVideos";
 import CourseEditionPage from "./pages/course/CourseEdition";
+import CourseDetails from "./pages/course/CourseDetails";
+
+import { PageNotFoundError } from "./components/common/error/ErrorPage";
 
 import { useAppDispatch, useAppSelector } from "./hooks/redux.hook";
 
@@ -49,7 +50,8 @@ import {
   setLoggedIn,
   setUserDataNull,
 } from "./redux/slices/userSlice";
-import CourseDetails from "./pages/course/CourseDetails";
+
+import { SomethingWentWrong } from "./components/common/error/SomethingWentWrong";
 
 interface DecodedToken {
   exp: number;
@@ -57,7 +59,6 @@ interface DecodedToken {
 
 function App() {
   const token = localStorage.getItem("token");
-  // console.log(token);
   const isLoggedIn = useAppSelector(loggedInStatus);
   let exp = 0;
 
@@ -142,6 +143,8 @@ function App() {
         {/* COURSE VIDEOS */}
         <Route path="/course-videos/:slug" element={<ViewCourseVideos />} />
 
+        {/* Error Page */}
+        <Route path="/error" element={<SomethingWentWrong />} />
         {/* PAGE NOT FOUND */}
         <Route path="/*" element={<PageNotFoundError />} />
       </Routes>

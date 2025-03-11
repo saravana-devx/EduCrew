@@ -58,7 +58,7 @@ const ContactPage = () => {
         email: "",
         phone: "",
         message: "",
-      }); // Reset form
+      });
       toast.success("Query send successfully.");
     } catch (error) {
       toast.error("Failed to send your query. Please try again.");

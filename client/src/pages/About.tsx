@@ -1,6 +1,6 @@
 import React from "react";
 
-import ReviewCard from "../components/common/RatingAndReview/ReviewCard";
+import ReviewCard from "../components/common/DisplayReview/ReviewCard";
 
 import instructor1 from "../assets/images/instructor.png";
 import instructor2 from "../assets/images/instructor2.png";

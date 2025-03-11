@@ -21,6 +21,7 @@ const errorHandler = (error: AxiosError): Promise<never> => {
         "Unable to reach the server. Please check your internet connection or try again later."
       );
     } else {
+      window.location.href = "/error";
       toast.error("An unexpected error occurred. Please try again.");
     }
   }
@@ -36,8 +37,12 @@ const errorHandler = (error: AxiosError): Promise<never> => {
       case 500:
         toast.error("Server error. Please try again later.");
         break;
+      case 429:
+        toast.warn("Too Many Requests! Please try again later.");
+        break;
       default:
-        toast.error("An unexpected error occurred. Please try again.");
+        window.location.href = "/error";
+      // toast.error("An unexpected error occurred. Please try again.");
     }
   }
   return Promise.reject(error);

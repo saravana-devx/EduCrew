@@ -23,33 +23,29 @@ import {
 } from "../../../redux/slices/InstructorDashboardSlice";
 import { EarningsByCourse, EarningsByMonthChart } from "./Chart";
 import TableComponent from "../tableComponent";
+import axios from "axios";
 
 const InstructorTable: React.FC = () => {
   const dashboardData = useAppSelector(getInstructorDashboard);
 
   const dispatch = useAppDispatch();
+
   useEffect(() => {
-    ProfileAPI.getInstructorDashboardData()
-      .then((result) => {
-        if (result && result.data) {
-          // setDashboardData(result.data);
-          dispatch(
-            setInstructorDashboard({
-              courses: result.data.courses,
-              totalEarnings: result.data.totalEarnings,
-            })
-          );
-        } else {
-          toast.error("Invalid response structure");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 404) {
+    (async function () {
+      try {
+        const result = await ProfileAPI.getInstructorDashboardData();
+        dispatch(
+          setInstructorDashboard({
+            courses: result.data.courses,
+            totalEarnings: result.data.totalEarnings,
+          })
+        );
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response?.status == 404) {
           toast.error("You haven't created a course yet");
-        } else {
-          toast.error("Failed to fetch instructor data");
         }
-      });
+      }
+    })();
   }, [dispatch]);
 
   const [query, setQuery] = useState("");
@@ -100,7 +96,7 @@ const InstructorTable: React.FC = () => {
           icon={<FaRupeeSign size={24} />}
         />
       </div>
-      
+
       <div className="w-full flex flex-col xl:flex-row gap-4">
         <div className="border-2 flex-1 p-4">
           <EarningsByCourse />

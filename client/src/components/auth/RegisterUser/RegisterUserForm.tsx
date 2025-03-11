@@ -45,24 +45,6 @@ const RegisterUserForm: React.FC = () => {
       password: formData.password,
       accountType: role,
     };
-    // dispatch(setLoading(true));
-    // await AuthAPI.registerUser(userData)
-    //   .then((result) => {
-    //     toast.success("Check Your email to verify account");
-    //     console.log(result);
-    //     userData.password = "";
-    //     navigate("/open-gmail");
-    //     dispatch(setLoading(false));
-    //   })
-    //   .catch((error) => {
-    //     if (error.response.status === 409) {
-    //       toast.error("email already exists");
-    //       dispatch(setLoading(false));
-    //       navigate("/login");
-    //     } else {
-    //       navigate("/");
-    //     }
-    //   });
     try {
       dispatch(setLoading(true));
       await AuthAPI.registerUser(userData);

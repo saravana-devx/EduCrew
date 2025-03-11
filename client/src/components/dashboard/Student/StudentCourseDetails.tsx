@@ -21,11 +21,6 @@ const StudentCourseDetails: React.FC = () => {
         const result = await CourseAPI.getEnrolledCourses();
         setCourses(result.data.courses);
         const courseProgress = await CourseAPI.getCourseByProgress();
-        // console.log(courseProgress);
-        // console.log(
-        //   "response structure -> ",
-        //   courseProgress.data.progressWithTotalVideos
-        // );
         dispatch(
           setCourseProgress(courseProgress.data.progressWithTotalVideos)
         );

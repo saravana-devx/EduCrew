@@ -12,10 +12,9 @@ import {
   LineElement,
   TooltipItem,
   ArcElement,
-} from "chart.js"; // Import necessary components from chart.js
+} from "chart.js";
 import { ProfileAPI } from "../../../api/auth/ProfileAPI";
 
-// Register chart components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -26,13 +25,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   ArcElement
-);
-// Define types for course data and earnings
-// interface CourseData {
-//   courseName: string;
-//   earnings: number;
-//   studentCount: number;
-// }
+)
 interface EarningsData {
   _id: string; // The month (year-month)
   count: number; // The total earnings for the month
@@ -96,12 +89,11 @@ export const EarningsByCourse: React.FC = () => {
     getMostEnrolledCourses();
   }, []);
 
-  // Prepare chart data
   const chartData = {
     labels: earningsData.map((course) => course.courseName), // Course names
     datasets: [
       {
-        label: "No. of Students", // Label for the chart
+        label: "No. of Students", 
         data: earningsData.map((course) => course.totalStudents), // Earnings values
         backgroundColor: [
           "rgba(173, 216, 230, 0.8)", // Light Blue
@@ -121,7 +113,6 @@ export const EarningsByCourse: React.FC = () => {
     ],
   };
 
-  // Chart options (customize as needed)
   const chartOptions = {
     responsive: true,
     // maintainAspectRatio: false, // Prevents chart distortion
@@ -131,7 +122,7 @@ export const EarningsByCourse: React.FC = () => {
       title: {
         display: true,
         text: "No. of Students Enrolled in Course",
-        font: { size: 18 }, // Larger title for clarity
+        font: { size: 18 },
       },
       tooltip: {
         callbacks: {
@@ -142,7 +133,7 @@ export const EarningsByCourse: React.FC = () => {
         },
       },
       legend: {
-        display: false, // Hides legend (optional)
+        display: false,
       },
     },
     scales: {

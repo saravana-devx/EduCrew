@@ -10,7 +10,6 @@ export const CourseAPI = {
       headers: getHeaders(),
       data: formData,
     });
-    console.log(response.data);
     return response.data;
   },
   editCourse: async function (courseId: string, data: FormData) {
@@ -20,7 +19,6 @@ export const CourseAPI = {
       headers: getHeaders(),
       data,
     });
-    console.log(response.data);
     return response.data;
   },
   updateCourseStatus: async function (id: string, status: string) {
@@ -30,7 +28,6 @@ export const CourseAPI = {
       headers: getHeaders(),
       data: { status },
     });
-    console.log(response.data);
     return response.data;
   },
   deleteCourseByInstructor: async function (courseId: string) {
@@ -39,7 +36,6 @@ export const CourseAPI = {
       method: "POST",
       headers: getHeaders(),
     });
-    console.log(response.data);
     return response.data;
   },
   deleteCourseByAdmin: async function (courseId: string) {
@@ -48,7 +44,6 @@ export const CourseAPI = {
       method: "POST",
       headers: getHeaders(),
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -57,15 +52,13 @@ export const CourseAPI = {
       url: CourseURL.getTopCourses,
       method: "GET",
     });
-    console.log(response.data);
     return response.data;
   },
-  getAllCourses: async function () {
+  getCourseByPage: async function (limit : number, page : number) {
     const response: AxiosResponse = await api.request({
-      url: CourseURL.getAllCourses,
+      url: `${CourseURL.getCourseByPage}?limit=${limit}&page=${page}`,
       method: "GET",
     });
-    console.log(response.data);
     return response.data;
   },
   getCourseByCategory: async function (category: string) {
@@ -73,23 +66,19 @@ export const CourseAPI = {
       url: CourseURL.getCourseByCategory + `/${category}`,
       method: "GET",
     });
-    console.log(response.data);
     return response.data;
   },
   getSearchResult: async function (query: string) {
-    console.log("query ->  ", query);
     const response: AxiosResponse = await api.request({
       url: CourseURL.getSearchResult + `/${query}`,
       method: "GET",
     });
-    console.log("loo -> ", response.data);
     return response.data;
   },
   getCourseById: async function (courseId: string) {
     const response: AxiosResponse = await api.request({
       url: CourseURL.getCourseById + `/${courseId}`,
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -99,7 +88,6 @@ export const CourseAPI = {
       method: "GET",
       headers: getHeaders(),
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -109,7 +97,6 @@ export const CourseAPI = {
       method: "PATCH",
       headers: getHeaders(),
     });
-    console.log(response.data);
     return response.data;
   },
 

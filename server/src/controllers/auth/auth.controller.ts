@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { body, validationResult } from "express-validator";
 import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -9,7 +10,6 @@ import asyncHandler from "../../middlewares/asyncHandler";
 
 import { ApiError } from "../../utils/apiResponseHandler/apiError";
 import { HTTP_STATUS, RESPONSE_MESSAGES } from "../../utils/constant";
-import { IInstructor, IStudent } from "../../interfaces/interface";
 
 import User from "../../model/User";
 import Instructor from "../../model/instructor";
@@ -30,8 +30,12 @@ const generateVerificationToken = (userId: string) => {
   return token;
 };
 
-export const registerUser = asyncHandler(
-  async (req: Request, res: Response) => {
+export const registerUser = [
+  body("email").isEmail().withMessage("Invalid email format"),
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
+  asyncHandler(async (req: Request, res: Response) => {
     const { firstName, lastName, email, password, accountType } = req.body;
 
     // Validate required fields
@@ -39,6 +43,15 @@ export const registerUser = asyncHandler(
       throw new ApiError({
         status: HTTP_STATUS.BAD_REQUEST,
         message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
+      });
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: errors.array()[0].msg,
       });
     }
 
@@ -113,11 +126,13 @@ export const registerUser = asyncHandler(
 
     await user.save();
 
-    const verificationLink = `http://localhost:5173/verify-email?token=${verificationToken}`;
+    const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
     const templatePath = path.join(
       __dirname,
       "..",
+      "..",
       "utils",
+      "email",
       "templates",
       "verifyEmail.html"
     );
@@ -136,88 +151,102 @@ export const registerUser = asyncHandler(
         data: { user },
       })
     );
-  }
-);
+  }),
+];
 
-export const loginUser = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const loginUser = [
+  body("email").isEmail().withMessage("Invalid email format").normalizeEmail(),
+  body("password").notEmpty().withMessage("Password is required"),
 
-  if (!email || !password) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
-    });
-  }
+  asyncHandler(async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-  let user = await User.findOne(
-    { email },
-    {
-      email: 1,
-      password: 1,
-      _id: 1,
-      accountType: 1,
-      isVerified: 1,
-      isActive: 1,
-      image: 1,
-      enrolledCourses: 1,
-      courses: 1,
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: errors.array()[0].msg,
+      });
     }
-  );
 
-  if (!user) {
-    throw new ApiError({
-      status: HTTP_STATUS.NOT_FOUND,
-      message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
-    });
-  }
+    if (!email || !password) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
+      });
+    }
 
-  // Check if the user account is active
-  if (user.isActive === false) {
-    throw new ApiError({
-      status: HTTP_STATUS.UNAUTHORIZED,
-      message: RESPONSE_MESSAGES.USERS.UNVERIFIED_EMAIL,
-    });
-  }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-
-  if (!isMatch) {
-    throw new ApiError({
-      status: HTTP_STATUS.CONFLICT,
-      message: RESPONSE_MESSAGES.USERS.INVALID_PASSWORD,
-    });
-  }
-
-  const secret = process.env.JWT_SECRET as jwt.Secret;
-
-  // Prepare token payload
-  const tokenPayload = {
-    email: user.email,
-    id: user._id,
-    role: user.accountType,
-  };
-
-  const token = jwt.sign(tokenPayload, secret, { expiresIn: "24h" });
-
-  const options: object = {
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    httpOnly: true,
-  };
-
-  // Exclude the password from the user object in the response
-  user.password = "";
-
-  res
-    .cookie("token", token, options)
-    .status(HTTP_STATUS.OK)
-    .json(
-      new ApiResponse({
-        status: HTTP_STATUS.OK,
-        message: RESPONSE_MESSAGES.USERS.LOGIN,
-        data: { token, user },
-      })
+    let user = await User.findOne(
+      { email },
+      {
+        email: 1,
+        password: 1,
+        _id: 1,
+        accountType: 1,
+        isVerified: 1,
+        isActive: 1,
+        image: 1,
+        enrolledCourses: 1,
+        courses: 1,
+      }
     );
-});
+
+    if (!user) {
+      throw new ApiError({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
+      });
+    }
+
+    // Check if the user account is active
+    if (user.isActive === false) {
+      throw new ApiError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        message: RESPONSE_MESSAGES.USERS.UNVERIFIED_EMAIL,
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      throw new ApiError({
+        status: HTTP_STATUS.CONFLICT,
+        message: RESPONSE_MESSAGES.USERS.INVALID_PASSWORD,
+      });
+    }
+
+    const secret = process.env.JWT_SECRET as jwt.Secret;
+
+    // Prepare token payload
+    const tokenPayload = {
+      email: user.email,
+      id: user._id,
+      role: user.accountType,
+    };
+
+    const token = jwt.sign(tokenPayload, secret, { expiresIn: "24h" });
+
+    const options: object = {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    };
+
+    // Exclude the password from the user object in the response
+    user.password = "";
+
+    res
+      .cookie("token", token, options)
+      .status(HTTP_STATUS.OK)
+      .json(
+        new ApiResponse({
+          status: HTTP_STATUS.OK,
+          message: RESPONSE_MESSAGES.USERS.LOGIN,
+          data: { token, user },
+        })
+      );
+  }),
+];
 
 export const confirmEmail = asyncHandler(
   async (req: Request, res: Response) => {
@@ -320,14 +349,24 @@ export const updateUserPassword = asyncHandler(
   }
 );
 
-export const sendPasswordResetEmail = asyncHandler(
-  async (req: Request, res: Response) => {
+export const sendPasswordResetEmail = [
+  body("email").isEmail().withMessage("Invalid email format"),
+  asyncHandler(async (req: Request, res: Response) => {
     const email = req.body.email;
 
     if (!email) {
       throw new ApiError({
         status: HTTP_STATUS.BAD_REQUEST,
         message: RESPONSE_MESSAGES.USERS.EMAIL_NOT_FOUND,
+      });
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: errors.array()[0].msg,
       });
     }
 
@@ -344,15 +383,17 @@ export const sendPasswordResetEmail = asyncHandler(
     user.verificationToken = verificationToken;
     await user.save();
 
-    const verificationLink = `http://localhost:5173/reset-password?token=${verificationToken}`;
+    const verificationLink = `${process.env.FRONTEND_URL}/reset-password?token=${verificationToken}`;
 
     // Path to your email template
     const templatePath = path.join(
       __dirname,
       "..",
+      "..",
       "utils",
+      "email",
       "templates",
-      "forgetPasswordEmailTemplate.html"
+      "forgotPassword.html"
     );
 
     let emailHtml = fs.readFileSync(templatePath, "utf8");
@@ -367,8 +408,8 @@ export const sendPasswordResetEmail = asyncHandler(
         message: RESPONSE_MESSAGES.USERS.EMAIL_SENT,
       })
     );
-  }
-);
+  }),
+];
 
 export const resetPassword = asyncHandler(
   async (req: Request, res: Response) => {
@@ -390,7 +431,7 @@ export const resetPassword = asyncHandler(
     const user = await User.findById(userId);
     if (!user) {
       throw new ApiError({
-        status: 404,
+        status: HTTP_STATUS.NOT_FOUND,
         message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
       });
     }

@@ -33,7 +33,6 @@ const CourseSubSection: React.FC<CourseSubSectionProps> = ({
 
   useEffect(() => {
     if (editSubSection) {
-      console.log("edit Sub Section -> ", editSubSection);
       setSubSectionData({
         _id: editSubSection._id,
         sectionId: sectionId,
@@ -51,8 +50,6 @@ const CourseSubSection: React.FC<CourseSubSectionProps> = ({
       });
     }
   }, [editSubSection]);
-
-  console.log("New Sub Section data -> ", subSectionData);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -110,7 +107,7 @@ const CourseSubSection: React.FC<CourseSubSectionProps> = ({
             updatedSubsection: response.data.updatedSubSection,
           })
         );
-        toast.success("Subsection updated successfully");
+        toast.success("Sub section updated successfully");
       } else {
         const response = await SubSectionAPI.createSubSection(
           formData,
@@ -122,12 +119,16 @@ const CourseSubSection: React.FC<CourseSubSectionProps> = ({
             subsection: response.data.subSection,
           })
         );
-        toast.success("Subsection added successfully");
+        toast.success("Sub section added successfully");
       }
       onClose();
-    } catch (error) {
-      console.error("Subsection operation failed:", error);
-      toast.error("Failed to perform subsection operation");
+    } catch (error: unknown) {
+      console.log(error);
+      if (editSubSection) {
+        toast.error("Failed to update sub section.");
+      } else {
+        toast.error("Failed to create sub section.");
+      }
     } finally {
       setIsUploading(false);
     }

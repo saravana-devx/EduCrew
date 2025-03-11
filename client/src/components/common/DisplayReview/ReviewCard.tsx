@@ -10,7 +10,7 @@ interface ReviewProps {
 }
 
 const ReviewList: React.FC<ReviewProps> = ({ reviews, shouldScroll }) => {
-  console.log("should scroll -> ", shouldScroll);
+  
   return (
     <div
       className={`gap-6 py-12 mx-auto px-4 sm:px-6 lg:px-8 ${

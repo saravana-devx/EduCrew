@@ -27,7 +27,7 @@ const mailSender = async (
     let info = await transporter.sendMail(mailOptions);
     return info;
   } catch (error) {
-    // console.log("Error in mailSender : ", error);
+    console.log("Error in mailSender : ", error);
     throw Error("Something went wrong while sending email.");
   }
 };

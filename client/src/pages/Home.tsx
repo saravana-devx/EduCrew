@@ -10,7 +10,7 @@ import {
 import { CourseAPI } from "../api/course/CourseAPI";
 
 import { SomethingWentWrong } from "../components/common/error/SomethingWentWrong";
-import ReviewCard from "../components/common/RatingAndReview/ReviewCard";
+import ReviewCard from "../components/common/DisplayReview/ReviewCard";
 import SearchInput from "../components/common/SearchInput";
 
 import HeroSection from "../components/Home/HeroSection";
@@ -25,25 +25,32 @@ import LoadingCard from "../components/course/LoadingCard";
 import CourseCard from "../components/course/CourseCard";
 
 import { reviews } from "../utils/reviews";
+import axios from "axios";
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.courseDetail.loading);
   const courses = useAppSelector(getTopCourses);
+
   useEffect(() => {
+    const getTopCourses = async () => {
+      try {
+        dispatch(setLoading(true));
+        const response = await CourseAPI.getTopCourses();
+        dispatch(setTopCourses(response.data));
+        dispatch(setLoading(false));
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log(error);
+        }
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
     if (courses.length === 0) {
-      dispatch(setLoading());
-      CourseAPI.getTopCourses()
-        .then((result) => {
-          // console.log("result -> ", result);
-          dispatch(setTopCourses(result.data));
-        })
-        .catch(() => {
-          // console.error("Failed to fetch courses:", error);
-          dispatch(setLoading());
-        });
+      getTopCourses();
     }
-  }, []);
+  }, [courses]);
 
   return (
     <div className="w-full h-auto">
@@ -136,9 +143,7 @@ const Home: React.FC = () => {
                 testimonials that inspire trust.
               </p>
             </div>
-            {/* <div className="grid gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"> */}
             <ReviewCard reviews={reviews} shouldScroll={false} />
-            {/* </div> */}
           </div>
         </section>
       </main>

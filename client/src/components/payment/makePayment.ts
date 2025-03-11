@@ -7,9 +7,9 @@ export const makePayment = async (
   dispatchEnrolledCourse: (courseId: string) => void
 ) => {
   const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-  console.log("stripe key ", stripeKey);
+  // console.log("stripe key ", stripeKey);
   const stripe = await loadStripe(stripeKey || "");
-  console.log("stripe");
+  // console.log("stripe");
   if (!stripe) {
     return toast.error(
       "Failed to load payment gateway. Please try again later."

@@ -37,7 +37,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
   const navigate = useNavigate();
   const user = useAppSelector(getUserDetails);
   const courseProgress = useAppSelector(getCourseProgress);
-  console.log(courseProgress);
 
   const calculatePercentage = (id: string): number => {
     if (courseProgress.length < 0) {
@@ -52,7 +51,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
         (progress.completedVideos.length / progress.totalVideos) *
         100
       ).toFixed(0);
-      console.log(percentage);
     }
     return Number(percentage);
   };

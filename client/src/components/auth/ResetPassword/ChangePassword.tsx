@@ -37,8 +37,6 @@ const ChangePassword: React.FC = () => {
             toast.warn("Password must be different from the previous one");
             break;
         }
-      } else {
-        toast.error("An unexpected error occurred. Please try again later.");
       }
     } finally {
       setLoading(false);

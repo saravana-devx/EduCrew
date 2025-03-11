@@ -1,5 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
 
 import { connectToDatabase } from "./configuration/database";
 
@@ -17,9 +19,27 @@ dotenv.config();
 
 const app: Application = express();
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, //15 minutes
+  max: 100,
+  // headers: true, //Enable if frontend needs rate-limits details
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: "Rate limit exceeded",
+      message:
+        "You have reached the maximum allowed requests. Try again later.",
+    });
+  },
+});
+
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
+
+app.use(limiter);
+
+app.use(mongoSanitize());
 
 const allowedOrigins: string[] = [process.env.FRONTEND_URL as string];
 

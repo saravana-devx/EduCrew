@@ -35,8 +35,8 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       const result = await AuthAPI.login(formData.email, formData.password);
-      console.log("result -> ", result);
-      toast.success(result);
+      // console.log("result -> ", result);
+      // toast.success(result);
       dispatch(setToken(result.data.token));
       dispatch(setUserData(result.data.user));
       localStorage.setItem("token", result.data.token);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Line } from "react-chartjs-2"; // Import Bar chart from react-chartjs-2
+import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,11 +11,9 @@ import {
   PointElement,
   LineElement,
   TooltipItem,
-} from "chart.js"; // Import necessary components from chart.js
+} from "chart.js"; 
 import { ProfileAPI } from "../../../api/auth/ProfileAPI";
-import Spinner from "./Spinner";
 
-// Register chart components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,7 +25,7 @@ ChartJS.register(
   Legend
 );
 
-// Define types for course data and earnings
+
 interface CourseData {
   courseName: string;
   earnings: number;
@@ -49,24 +47,21 @@ export const EarningsByMonthChart: React.FC = () => {
     getEarningsByMonth();
   }, []);
 
-  console.log("earning data -> ", earningsData);
-  // Prepare the chart data
   const chartData = {
-    labels: earningsData.map((item) => item._id), // Months as labels (e.g., "2024-01")
+    labels: earningsData.map((item) => item._id), // Months as labels ("2024-01")
     datasets: [
       {
-        label: "Total Earnings ($)", // Label for the dataset
-        data: earningsData.map((item) => item.totalEarnings), // Earnings data
-        fill: false, // Disable fill under the line
-        backgroundColor: "rgb(159, 168, 218)", // Line color (backgroundColor is not needed for lines)
-        borderColor: "rgb(159, 168, 218)", // Line border color
-        borderWidth: 2, // Line border width
+        label: "Total Earnings ($)", 
+        data: earningsData.map((item) => item.totalEarnings), 
+        fill: false, 
+        backgroundColor: "rgb(159, 168, 218)", 
+        borderColor: "rgb(159, 168, 218)", 
+        borderWidth: 2,
         tension: 0.4, // Smooth line curve
       },
     ],
   };
 
-  // Chart options (customize as needed)
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -122,7 +117,7 @@ export const EarningsByMonthChart: React.FC = () => {
 };
 
 export const EarningsByCourse: React.FC = () => {
-  const [earningsData, setEarningsData] = useState<CourseData[]>([]); // Type the state
+  const [earningsData, setEarningsData] = useState<CourseData[]>([]);
 
   useEffect(() => {
     async function getEarningsByCourse() {
@@ -132,13 +127,12 @@ export const EarningsByCourse: React.FC = () => {
     getEarningsByCourse();
   }, []);
 
-  // Prepare chart data
   const chartData = {
-    labels: earningsData.map((course) => course.courseName), // Course names
+    labels: earningsData.map((course) => course.courseName),
     datasets: [
       {
         label: "Earnings ($)",
-        data: earningsData.map((course) => course.earnings), // Earnings values
+        data: earningsData.map((course) => course.earnings),
         backgroundColor: [
           "rgba(173, 216, 230, 0.8)", // Light Blue
           "rgba(144, 238, 144, 0.8)", // Light Green
@@ -174,11 +168,11 @@ export const EarningsByCourse: React.FC = () => {
           label: (tooltipItem: TooltipItem<"bar">) => {
             const value = tooltipItem.raw as number;
             return `$${value.toFixed(2)}`;
-          }, // Adds commas
+          },
         },
       },
       legend: {
-        display: false, // Hides legend (optional)
+        display: false,
       },
     },
     scales: {
@@ -200,7 +194,7 @@ export const EarningsByCourse: React.FC = () => {
           font: { size: 14 },
         },
         ticks: {
-          autoSkip: false, // Show all labels
+          autoSkip: false,
           font: { size: 12 },
         },
       },

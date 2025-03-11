@@ -18,8 +18,8 @@ const ReviewFormModal: React.FC<ReviewFormModalProps> = ({ onSubmit }) => {
       return;
     }
     onSubmit(rating, review);
-    setRating(0); 
-    setReview(""); 
+    setRating(0);
+    setReview("");
     setShowModal(false);
     toast.success("Review added Successfully");
   };

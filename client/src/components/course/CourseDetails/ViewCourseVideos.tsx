@@ -9,27 +9,25 @@ import { RatingAndReviewAPI } from "../../../api/rating/RatingAPI";
 import { CourseAPI } from "../../../api/course/CourseAPI";
 import { setCompletedVideo } from "../../../redux/slices/userSlice";
 import VideoJS from "./Video";
-import ReviewFormModal from "../../common/Rating/ReviewFormModal";
+import ReviewFormModal from "../../common/RatingAndReviewForm/ReviewFormModal";
 import Content from "./Content";
 
 const ViewCourseVideos: React.FC = () => {
   const activeCourse = useAppSelector(getActiveCourse);
 
   const dispatch = useAppDispatch();
-  console.log("active course -> ", activeCourse);
+
   useEffect(() => {
     if (activeCourse?.content) {
       const firstSection = activeCourse.content[0];
       const firstSubsection = firstSection.subSection?.[0];
       dispatch(setActiveSubSection(firstSubsection));
-      // console.log("first subSection -> ", firstSubsection);
     }
   }, [activeCourse, dispatch]);
 
   const handleReviewSubmit = async (rating: number, review: string) => {
-    // console.log("Review Submitted: ", { rating, review });
     if (!activeCourse?._id) {
-      console.error("Course ID is not available.");
+      // console.error("Course ID is not available.");
       return;
     }
     await RatingAndReviewAPI.createRatingAndReview(
@@ -45,7 +43,6 @@ const ViewCourseVideos: React.FC = () => {
   const handleVideoCompletion = async () => {
     if (activeCourse?._id) {
       await CourseAPI.updateProgress(activeCourse._id, activeSubSection._id);
-      // Mark the video as completed in your backend or update state
       dispatch(
         setCompletedVideo({
           courseId: activeCourse?._id,
@@ -61,7 +58,6 @@ const ViewCourseVideos: React.FC = () => {
     responsive: true,
     fluid: true,
     sources:
-      // activeSubSection.videoUrl
       // ?
       [
         {
@@ -73,11 +69,11 @@ const ViewCourseVideos: React.FC = () => {
     playbackRateControl: true,
     playbackRates: [0.5, 1, 1.5, 2],
     controlBar: {
-      pictureInPictureToggle: false, // Disable PiP control
+      pictureInPictureToggle: false,
       playbackRateMenuButton: true,
     },
   };
-  // console.log(videoJsOptions)
+
   return (
     <div className="max-w-9xl lg:px-12 mx-auto mt-8 flex flex-col xl:flex-row gap-x-4">
       <div className="w-full px-1 lg:w-[17/20] mx-auto xl:w-[13/20] overflow-hidden">

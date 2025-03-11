@@ -13,16 +13,21 @@ import {
   getUserDetails,
   loggedInStatus,
 } from "../../../redux/slices/userSlice";
+
 import { CourseAPI } from "../../../api/course/CourseAPI";
 import { RatingAndReviewAPI } from "../../../api/rating/RatingAPI";
+
+import DisplayRating from "../../common/DisplayReview/DisplayRating";
+import ReviewCard from "../../common/DisplayReview/ReviewCard";
 import SearchInput from "../../common/SearchInput";
 import { makePayment } from "../../payment/makePayment";
-import DisplayRating from "../../common/RatingAndReview/DisplayRating";
+
 import Spinner from "../../common/spinner/Spinner";
+
 import { SomethingWentWrong } from "../../common/error/SomethingWentWrong";
 import dateFormatter from "../../../utils/dateFormatter";
+
 import Content from "./Content";
-import ReviewCard from "../../common/RatingAndReview/ReviewCard";
 
 const createSlug = (title: string) =>
   title
@@ -33,7 +38,7 @@ const createSlug = (title: string) =>
     .replace(/--+/g, "-")
     .slice(0, 50);
 
-const Course = () => {
+const Course: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -63,13 +68,15 @@ const Course = () => {
           courseId as string
         );
         dispatch(setActiveCourse(courseResponse.data.course));
+
         // Fetch course rating
         const ratingResponse = await RatingAndReviewAPI.getAverageRating(
           courseId as string
         );
         setRating(ratingResponse.data.averageRating || 0);
       } catch (error) {
-        console.error("Error fetching course data:", error);
+        console.log(error);
+      } finally {
         dispatch(setLoading(false));
       }
     };
