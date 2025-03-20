@@ -1,4 +1,8 @@
-import image from "../assets/images/reviewPerson.jpg";
+import image1 from "../assets/images/instructor.png";
+// import image2 from "../components/Home/instructor2.jpg";
+import image3 from "../components/Home/instructor4.jpg";
+import image4 from "../assets/images/instructor2.png";
+import image2 from "../assets/images/instructor0.png";
 
 export const reviews = [
   {
@@ -6,7 +10,7 @@ export const reviews = [
     user: {
       firstName: "John",
       lastName: "Doe",
-      image: image,
+      image: image2,
     },
     rating: 4.5,
     review:
@@ -17,7 +21,7 @@ export const reviews = [
     user: {
       firstName: "Jane",
       lastName: "Smith",
-      image: image,
+      image: image1,
     },
     rating: 5,
     review:
@@ -28,7 +32,7 @@ export const reviews = [
     user: {
       firstName: "Mike",
       lastName: "Johnson",
-      image: image,
+      image: image1,
     },
     rating: 4,
     review:
@@ -39,7 +43,7 @@ export const reviews = [
       _id: "4",
       firstName: "Emily",
       lastName: "Brown",
-      image: image,
+      image: image3,
     },
     rating: 4.8,
     review:
@@ -50,7 +54,7 @@ export const reviews = [
     user: {
       firstName: "Jane",
       lastName: "Smith",
-      image: image,
+      image: image2,
     },
     rating: 5,
     review:
@@ -62,7 +66,7 @@ export const reviews = [
     user: {
       firstName: "John",
       lastName: "Doe",
-      image: image,
+      image: image4,
     },
     rating: 4.5,
     review:

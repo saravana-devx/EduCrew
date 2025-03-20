@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEdit, FaUser } from "react-icons/fa";
 
@@ -14,10 +14,14 @@ import {
   setUserData,
   setUserDataNull,
 } from "../../redux/slices/userSlice";
+import ConfirmDeleteModal from "../../components/common/modal/DeleteModal";
 
 const ProfileDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector(getUserDetails);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -38,6 +42,7 @@ const ProfileDetail: React.FC = () => {
     dispatch({ type: "RESET" });
     localStorage.clear();
     toast.success("Account Deleted Successfully");
+    navigate("/");
   };
 
   return (
@@ -143,18 +148,24 @@ const ProfileDetail: React.FC = () => {
             <div className="mt-12 flex flex-col items-center">
               <button
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete your account? This action cannot be undone."
-                    )
-                  ) {
-                    handleDeleteAccount();
-                  }
+                  setModalOpen(true);
                 }}
                 className="bg-red-600 text-white font-semibold px-6 py-2 rounded-full shadow-md transition-transform duration-300 ease-in-out hover:bg-red-700 hover:scale-105"
               >
                 Delete Account
               </button>
+              {modalOpen && (
+                <ConfirmDeleteModal
+                  buttonText="Delete Account"
+                  description="Are you sure you want to delete this account? This action cannot be undone."
+                  onClick={() => {
+                    handleDeleteAccount();
+                    setModalOpen(false);
+                  }}
+                  modalOpen={modalOpen}
+                  setModalOpen={setModalOpen}
+                />
+              )}
             </div>
           </div>
         </div>

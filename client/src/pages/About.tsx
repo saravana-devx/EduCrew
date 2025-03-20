@@ -1,13 +1,20 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import ReviewCard from "../components/common/DisplayReview/ReviewCard";
 
 import instructor1 from "../assets/images/instructor.png";
 import instructor2 from "../assets/images/instructor2.png";
-import instructor3 from "../assets/images/instructor3.png";
-import missionImage from "../assets/images/about.png";
-
+import missionImage from "../assets/images/Downpic.cc-1777337453.jpg";
+import instructor from "../assets/images/instructor3.png";
+import instructor4 from "../components/Home/instructor4.jpg";
 import { reviews } from "../utils/reviews";
+
+const instructorDetails = [
+  { name: "Margot Robbie", image: instructor },
+  { name: "John Doe", image: instructor2 },
+  { name: "Marlene Favela", image: instructor1 },
+  { name: "Kenny Johnson", image: instructor4 },
+];
 
 const About: React.FC = () => {
   return (
@@ -61,7 +68,7 @@ const About: React.FC = () => {
           <h2 className="text-4xl font-bold text-center mb-12 fade-in">
             Meet Our Team
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center fade-in">
               <img
                 src={instructor1}
@@ -91,6 +98,24 @@ const About: React.FC = () => {
               <h3 className="text-2xl font-semibold">Emily Johnson</h3>
               <p className="text-lg leading-relaxed">Chief Operating Officer</p>
             </div>
+          </div> */}
+          <div className="w-full md:w-4xl lg:max-w-5xl mx-auto grid place-items-center grid-cols-2 md:grid-cols-4 gap-4">
+            {instructorDetails.map((instructor, index) => (
+              <Fragment key={index}>
+                <div className="w-48 md:w-full flex flex-col gap-x-4 md:gap-x-0 items-center">
+                  <div className="z-10 w-full p-4 flex flex-col items-center shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300 bg-white">
+                    <img
+                      className="w-36 h-48 md:w-36 md:h-48 lg:w-64 lg:h-72 rounded-full mb-4"
+                      src={instructor.image}
+                      alt={instructor.name}
+                    />
+                    <p className="text-base md:text-lg font-semibold text-center text-gray-800">
+                      {instructor.name}
+                    </p>
+                  </div>
+                </div>
+              </Fragment>
+            ))}
           </div>
         </div>
       </section>
@@ -112,6 +137,13 @@ const About: React.FC = () => {
                 to support educators and learners alike and are excited about
                 the future of online education.
               </p>
+            </div>
+            <div>
+              <img
+                src={missionImage}
+                alt="Mission"
+                className="w-full bg-none shadow-lg"
+              />
             </div>
           </div>
         </div>

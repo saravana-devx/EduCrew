@@ -2,12 +2,15 @@ import React, { Fragment } from "react";
 import instructor1 from "../../assets/Images/instructor2.png";
 import instructor from "../../assets/Images/instructor3.png";
 
+import instructor2 from "./instructor2.png";
+import instructor4 from "./instructor4.jpg";
+
 const TopInstructors: React.FC = () => {
   const instructorDetails = [
-    { name: "John Doe", image: instructor1 },
     { name: "Margot Robbie", image: instructor },
+    { name: "John Doe", image: instructor2 },
     { name: "Marlene Favela", image: instructor1 },
-    { name: "Kenny Johnson", image: instructor },
+    { name: "Kenny Johnson", image: instructor4 },
   ];
 
   return (

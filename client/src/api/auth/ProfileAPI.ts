@@ -69,6 +69,14 @@ export const ProfileAPI = {
     console.log(response.data);
     return response.data;
   },
+  deleteAccountByAdmin: async function (userId: string) {
+    const response: AxiosResponse = await api.request({
+      url: ProfileURL.deleteAccountByAdmin + `/${userId}`,
+      method: "DELETE",
+    });
+    console.log(response.data);
+    return response.data;
+  },
   getEarningsByMonth: async function () {
     const response: AxiosResponse = await api.request({
       url: ProfileURL.getEarningsByMonth,

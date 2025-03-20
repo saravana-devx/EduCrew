@@ -15,12 +15,17 @@ import {
 } from "../../../redux/slices/InstructorDashboardSlice";
 import { Course } from "./ColumnDefinition";
 import { AxiosError } from "axios";
+import ConfirmDeleteModal from "../../common/modal/DeleteModal";
+import { useState } from "react";
 type RowActionsProps = {
   row: Row<RowData>;
 };
 
 //component for edit/delete button for courses
 export const RowActions: React.FC<RowActionsProps> = ({ row }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const rowData = row.original as Course;
 
   const dispatch = useAppDispatch();
@@ -29,22 +34,20 @@ export const RowActions: React.FC<RowActionsProps> = ({ row }) => {
   const dashboardData = useAppSelector(getInstructorDashboard);
 
   const handleDelete = async (courseId: string) => {
-    if (window.confirm("Are you sure you want to delete this course?")) {
-      try {
-        await CourseAPI.deleteCourseByInstructor(courseId);
-        dispatch(
-          setInstructorDashboard({
-            courses: dashboardData.courses.filter(
-              (course) => course._id != rowData._id
-            ),
-            totalEarnings: dashboardData.totalEarnings,
-          })
-        );
-        toast.success("Course deleted successfully");
-      } catch (error: unknown) {
-        if (error instanceof AxiosError && error.response?.status === 500) {
-          toast.error("Failed to Delete Course");
-        }
+    try {
+      await CourseAPI.deleteCourseByInstructor(courseId);
+      dispatch(
+        setInstructorDashboard({
+          courses: dashboardData.courses.filter(
+            (course) => course._id != rowData._id
+          ),
+          totalEarnings: dashboardData.totalEarnings,
+        })
+      );
+      toast.success("Course deleted successfully");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 500) {
+        toast.error("Failed to Delete Course");
       }
     }
   };
@@ -73,13 +76,31 @@ export const RowActions: React.FC<RowActionsProps> = ({ row }) => {
       </button>
       <button
         className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full transition-all duration-200 text-sm relative group"
-        onClick={() => handleDelete(rowData._id)}
+        // onClick={() => handleDelete(rowData._id)}
+        onClick={() => {
+          setSelectedId(rowData._id);
+          setModalOpen(true);
+        }}
       >
         Delete
         <span className="hidden group-hover:block absolute left-0 top-full bg-gray-50 text-black p-1 rounded min-w-[100px]">
           Delete Course
         </span>
       </button>
+      {modalOpen && (
+        <ConfirmDeleteModal
+          buttonText="Delete Course"
+          description="Are you sure you want to delete this course? This action cannot be undone."
+          onClick={() => {
+            if (selectedId) {
+              handleDelete(selectedId); // Call the delete function
+            }
+            setModalOpen(false); // Close the modal
+          }}
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+        />
+      )}
     </div>
   );
 };

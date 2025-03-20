@@ -47,6 +47,7 @@ const Login: React.FC = () => {
       console.log("error -> ", error);
       if (axios.isAxiosError(error)) {
         const { response } = error;
+        console.log(response);
         if (response) {
           const statusCode = response.data?.status;
           switch (statusCode) {
@@ -55,7 +56,7 @@ const Login: React.FC = () => {
               break;
             case 404:
               toast.error("Email does not exist");
-              navigate("/signUp");
+              navigate("/register-user");
               toast.success("Create a new account");
               break;
             case 409:

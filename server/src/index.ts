@@ -14,6 +14,8 @@ import paymentRoute from "./routes/payment.routes";
 import profileRoute from "./routes/profile.routes";
 import ratingRoute from "./routes/rating.routes";
 
+import { stripeWebhook } from "./controllers/payment/payment.controller";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -40,8 +42,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(limiter);
 
 app.use(mongoSanitize());
-
-const allowedOrigins: string[] = [process.env.FRONTEND_URL as string];
+console.log("frontend url -> ", process.env.FRONTEND_URL);
+const allowedOrigins: string[] = [
+  process.env.FRONTEND_URL || ("http://localhost:5173" as string),
+];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
@@ -49,6 +53,11 @@ const options: cors.CorsOptions = {
 };
 
 app.use(cors(options));
+
+app.set("trust proxy", true);
+
+app.use("/webhook", express.raw({ type: "application/json" }));
+
 app.use(express.json());
 
 app.use("/api/v1/auth", authRoute);
@@ -57,6 +66,8 @@ app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/profile", profileRoute);
 app.use("/api/v1/rating-and-review", ratingRoute);
+
+app.post("/webhook", stripeWebhook);
 
 app.use(errorMiddleware);
 

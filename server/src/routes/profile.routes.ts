@@ -11,6 +11,7 @@ import {
   getEarningByCourses,
   getEarningByMonth,
   getMostEnrolledCourses,
+  deleteAccountByAdmin,
 } from "../controllers/profile/profile.controller";
 
 import { admin, auth, instructor } from "../middlewares/auth";
@@ -33,6 +34,7 @@ router.get("/getCoursesInfoForAdmin", auth, admin, getCoursesInfoForAdmin);
 router.get("/getUsersInfoForAdmin", auth, admin, getUsersInfoForAdmin);
 router.get("/get-total-student-instructor", getTotalStudentAndInstructor);
 router.get("/get-most-enrolled-courses", getMostEnrolledCourses);
+router.delete("/delete-account-by-admin/:userId", deleteAccountByAdmin);
 
 // router.get("/admin-dashboard", auth, admin, getAdminDashboardDetails);
 

@@ -1,12 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 export const api = axios.create({
   withCredentials: true,
-  baseURL: `${backendUrl}/api/v1`,
+  baseURL: `${BACKEND_URL}/api/v1`,
 });
-
 /**
  * !Using Promise<never> indicates that this function always throws an error,
  * !so it will never resolve successfully
@@ -41,7 +41,7 @@ const errorHandler = (error: AxiosError): Promise<never> => {
         toast.warn("Too Many Requests! Please try again later.");
         break;
       default:
-        window.location.href = "/error";
+      // window.location.href = "/error";
       // toast.error("An unexpected error occurred. Please try again.");
     }
   }

@@ -119,6 +119,29 @@ export const deleteAccount = asyncHandler(
   }
 );
 
+export const deleteAccountByAdmin = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ApiError({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: "User not found",
+      });
+    }
+
+    const deleteUser = await User.deleteOne({ _id: userId });
+
+    res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: "User Account Deleted Successfully",
+      })
+    );
+  }
+);
+
 export const getInstructorDashboard = asyncHandler(
   async (req: Request, res: Response) => {
     const instructorId = req.currentUser.id;
@@ -255,6 +278,11 @@ export const getEarningByCourses = asyncHandler(
           price: 1,
           studentCount: { $size: "$studentEnrolled" },
           earnings: { $multiply: [{ $size: "$studentEnrolled" }, "$price"] },
+        },
+      },
+      {
+        $match: {
+          studentCount: { $gt: 0 }, // Filter courses where studentCount > 0
         },
       },
       {
@@ -399,6 +427,11 @@ export const getMostEnrolledCourses = asyncHandler(
           totalStudents: {
             $size: "$studentEnrolled",
           },
+        },
+      },
+      {
+        $match: {
+          totalStudents: { $gt: 0 }, // Filter courses where studentCount > 0
         },
       },
       {

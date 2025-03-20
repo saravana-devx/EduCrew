@@ -9,7 +9,7 @@ import {
   setLoading,
 } from "../../../redux/slices/courseDetailSlice";
 import {
-  addEnrolledCourse,
+  // addEnrolledCourse,
   getUserDetails,
   loggedInStatus,
 } from "../../../redux/slices/userSlice";
@@ -113,9 +113,12 @@ const Course: React.FC = () => {
       return toast.error("Instructors can't purchase courses.");
     }
 
-    await makePayment(activeCourse._id, (courseId) =>
-      dispatch(addEnrolledCourse(courseId))
-    );
+    // await makePayment(activeCourse._id, (courseId) =>
+    //   dispatch(addEnrolledCourse(courseId))
+    // );
+    if (courseId) {
+      await makePayment(courseId);
+    }
   };
 
   return (

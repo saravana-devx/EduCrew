@@ -58,6 +58,7 @@ const Navbar: React.FC = () => {
     dispatch(setLoggedIn(false));
     dispatch(setUserDataNull());
     localStorage.removeItem("persist:user");
+    localStorage.clear();
     navigate("/");
     dispatch({ type: "RESET" });
   };

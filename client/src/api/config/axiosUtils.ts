@@ -22,13 +22,14 @@ export const AuthURL = {
 export const ProfileURL = {
   profileDetails: "/profile/profile-details",
   updateProfile: "/profile/update-profile",
-  deleteAccount: "/profile/delete-count",
+  deleteAccount: "/profile/delete-account",
 
   getAdminDashboardData: "/profile/admin-dashboard",
   getCoursesInfoForAdmin: "/profile/getCoursesInfoForAdmin",
   getUsersInfoForAdmin: "/profile/getUsersInfoForAdmin",
   getMostEnrolledCourses: "profile/get-most-enrolled-courses",
   getTotalUsersByStatus: "/profile/get-total-student-instructor",
+  deleteAccountByAdmin: "/profile/delete-account-by-admin",
 
   getInstructorDashboardData: "/profile/instructor-dashboard",
   getEarningsByMonth: "/profile/get-earnings-by-month",
@@ -44,7 +45,7 @@ export const CourseURL = {
 
   getTopCourses: "/course/top-courses",
   // getAllCourses: "/course/get-all-courses",
-  getCourseByPage : "/course/get-courses",
+  getCourseByPage: "/course/get-courses",
   getCourseByCategory: "/course/category",
   getSearchResult: "/course/search",
   getCourseById: "/course",

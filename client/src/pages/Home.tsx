@@ -34,6 +34,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const getTopCourses = async () => {
+      console.log("fetching top-courses");
       try {
         dispatch(setLoading(true));
         const response = await CourseAPI.getTopCourses();
@@ -47,6 +48,7 @@ const Home: React.FC = () => {
         dispatch(setLoading(false));
       }
     };
+    console.log("length of courses -> ", courses.length);
     if (courses.length === 0) {
       getTopCourses();
     }
@@ -80,7 +82,7 @@ const Home: React.FC = () => {
           </div>
           <div className="w-full 2xl:w-4/6 mx-auto">
             {/* Conditional Rendering */}
-            {loading ? (
+            {/* {loading ? (
               <LoadingCard />
             ) : courses.length === 0 ? (
               <div className="col-span-full flex justify-center items-center">
@@ -88,6 +90,18 @@ const Home: React.FC = () => {
               </div>
             ) : (
               <CourseCard courses={courses} />
+            )} */}
+            {loading && <LoadingCard />}
+            {!loading ? (
+              courses && courses.length === 0 ? (
+                <div className="col-span-full flex justify-center items-center">
+                  <SomethingWentWrong />
+                </div>
+              ) : (
+                <CourseCard courses={courses} />
+              )
+            ) : (
+              <LoadingCard />
             )}
           </div>
         </section>

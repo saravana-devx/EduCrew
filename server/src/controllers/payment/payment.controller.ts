@@ -62,22 +62,25 @@ export const createCheckOutSession = async (req: Request, res: Response) => {
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
+    mode: "payment",
+    success_url: `${process.env.FRONTEND_URL}/payment-success`,
+    cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
+    metadata: {
+      courseId: courseId,
+      userId: userId,
+    },
     line_items: [
       {
         price_data: {
-          currency: "inr",
+          currency: "usd",
           product_data: {
             name: course.courseName,
-            images: [course.thumbnail],
           },
-          unit_amount: Math.round(course.price * 100),
+          unit_amount: course.price * 100,
         },
         quantity: 1,
       },
     ],
-    mode: "payment",
-    success_url: `${process.env.FRONTEND_URL}/payment-success`,
-    cancel_url: `${process.env.FRONTEND_URL}/payment-unsuccess`,
   });
 
   res.status(HTTP_STATUS.OK).json(
@@ -89,72 +92,109 @@ export const createCheckOutSession = async (req: Request, res: Response) => {
   );
 };
 
-export const purchaseCourse = asyncHandler(
+const purchaseCourseOperation = async (userId: string, courseId: string) => {
+  const student = await Student.findById(userId);
+  const course = await Course.findById(courseId);
+
+  if (!student) {
+    throw new ApiError({
+      status: HTTP_STATUS.NOT_FOUND,
+      message: RESPONSE_MESSAGES.USERS.NOT_FOUND,
+    });
+  }
+
+  if (!course) {
+    throw new ApiError({
+      status: HTTP_STATUS.NOT_FOUND,
+      message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
+    });
+  }
+
+  await Student.findByIdAndUpdate(
+    userId,
+    {
+      $push: { enrolledCourses: courseId },
+    },
+    { new: true }
+  );
+
+  // add student id in studentEnrolled array in course
+  await Course.findByIdAndUpdate(
+    courseId,
+    {
+      $push: {
+        studentEnrolled: userId,
+      },
+    },
+    { new: true }
+  );
+  await Instructor.findByIdAndUpdate(
+    course.instructor,
+    {
+      $inc: {
+        earnings: course.price,
+      },
+    },
+    { new: true }
+  );
+
+  const templatePath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "utils",
+    "email",
+    "templates",
+    "purchasedCourse.html"
+  );
+  let emailHtml = fs.readFileSync(templatePath, "utf8");
+  emailHtml = emailHtml.replace(/{{courseName}}/g, course.courseName);
+
+  await mailSender(student.email, "Course Purchase Confirmation", emailHtml);
+};
+
+export const stripeWebhook = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id, email } = req.currentUser;
-    const { courseId } = req.params;
+    console.log("-----------------------------");
+    console.log("working under stripe webhooks");
+    console.log("-----------------------------");
 
-    const course = await Course.findById(courseId);
+    const sig = req.headers["stripe-signature"];
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (!course) {
-      throw new ApiError({
-        status: HTTP_STATUS.NOT_FOUND,
-        message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
-      });
+    if (!secretKey || !endpointSecret) {
+      return res.status(403).send("Stripe secret keys missing");
     }
 
-    const enrolledInCourse = await Student.findByIdAndUpdate(
-      id,
-      {
-        $push: { enrolledCourses: courseId },
-      },
-      { new: true }
-    );
+    const stripe = new Stripe(secretKey);
+    let event;
 
-    // add student id in studentEnrolled array in course
-    const studentEnrolled = await Course.findByIdAndUpdate(
-      courseId,
-      {
-        $push: {
-          studentEnrolled: id,
-        },
-      },
-      { new: true }
-    );
-    await Instructor.findByIdAndUpdate(
-      course.instructor,
-      {
-        $inc: {
-          earnings: course.price,
-        },
-      },
-      { new: true }
-    );
+    try {
+      // Pass raw request body directly
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig as string,
+        endpointSecret
+      );
+    } catch (err: any) {
+      console.error("Webhook Error:", err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
 
-    const templatePath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "utils",
-      "email",
-      "templates",
-      "purchasedCourse.html"
-    );
-    let emailHtml = fs.readFileSync(templatePath, "utf8");
-    // Replace all occurrences of {{verificationLink}} with the actual verification link
-    emailHtml = emailHtml.replace(/{{courseName}}/g, course.courseName);
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const courseId = session.metadata?.courseId;
+      const userId = session.metadata?.userId;
 
-    await mailSender(email, "Generate a new password", emailHtml);
+      if (!courseId || !userId) {
+        console.error("Missing metadata in Stripe session");
+        return res.status(400).send("Missing metadata");
+      }
 
-    res.status(HTTP_STATUS.OK).json(
-      new ApiResponse({
-        status: HTTP_STATUS.OK,
-        message: RESPONSE_MESSAGES.PAYMENT.PURCHASED,
-        data: {
-          enrolledInCourse,
-          studentEnrolled,
-        },
-      })
-    );
+      await purchaseCourseOperation(userId, courseId);
+    }
+
+    res.status(200).send("Webhook received");
   }
 );

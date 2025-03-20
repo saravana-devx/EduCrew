@@ -25,7 +25,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   ArcElement
-)
+);
 interface EarningsData {
   _id: string; // The month (year-month)
   count: number; // The total earnings for the month
@@ -56,11 +56,18 @@ export const PieChart = () => {
     ],
   };
   //   });
-
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false, // Allows manual height control
+  };
   return (
     <div className="w-full flex justify-center items-center p-4">
       {Data.length > 0 ? (
-        <Pie data={chartData} className="w-full max-w-3xl h-96 lg:h-auto" />
+        <Pie
+          data={chartData}
+          options={chartOptions}
+          className="w-full max-w-[500px] h-[250px] sm:h-[300px] md:h-[350px]"
+        />
       ) : (
         <div className="flex flex-col justify-center items-center w-full h-[300px] sm:h-[400px] md:h-[500px]">
           <p className="font-bold text-lg sm:text-xl md:text-2xl mb-6">
@@ -93,7 +100,7 @@ export const EarningsByCourse: React.FC = () => {
     labels: earningsData.map((course) => course.courseName), // Course names
     datasets: [
       {
-        label: "No. of Students", 
+        label: "No. of Students",
         data: earningsData.map((course) => course.totalStudents), // Earnings values
         backgroundColor: [
           "rgba(173, 216, 230, 0.8)", // Light Blue
