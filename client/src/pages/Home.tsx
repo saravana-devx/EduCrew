@@ -116,7 +116,7 @@ const Home: React.FC = () => {
               OUR INSTRUCTORS
             </p>
             <h2 className="text-2xl md:text-3xl mt-2 font-bold text-slate-900">
-              From The LearnSphere Community
+              From The EduCrew Community
             </h2>
             <p className="text-gray-400 mt-1 text-sm md:text-base">
               When An unknown Printer Took A Galley of Type And Scrambled It To

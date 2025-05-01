@@ -84,7 +84,8 @@ const ProfileDetail: React.FC = () => {
                   alt="Profile"
                 />
               ) : (
-                <FaEdit />
+                <FaUser className="text-indigo-400 rounded-full bg-slate-200 p-8 w-44 h-48 cursor-pointer" />
+                // <FaEdit />
               )}
 
               <p className="text-2xl md:text-3xl font-semibold mt-4">

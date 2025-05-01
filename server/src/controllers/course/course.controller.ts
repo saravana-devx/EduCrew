@@ -20,15 +20,31 @@ import Instructor from "../../model/instructor";
 
 export const createCourse = asyncHandler(
   async (req: Request, res: Response) => {
-    const {
-      courseName,
-      description,
-      price,
-      whatYouWillLearn,
-      status,
-      category,
-    } = req.body;
+    const { courseName, description, price, status, category } = req.body;
+
+    let { whatYouWillLearn } = req.body;
+
     const { id } = req.currentUser;
+
+    // Convert stringified array if it comes as a string
+    if (typeof whatYouWillLearn === "string") {
+      try {
+        whatYouWillLearn = JSON.parse(whatYouWillLearn);
+      } catch (err) {
+        throw new ApiError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          message: "Invalid format for whatYouWillLearn",
+        });
+      }
+    }
+
+    // Validate it's actually an array
+    if (!Array.isArray(whatYouWillLearn) || whatYouWillLearn.length === 0) {
+      throw new ApiError({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: RESPONSE_MESSAGES.COMMON.REQUIRED_FIELDS,
+      });
+    }
 
     const instructor = await Instructor.findById(id);
     if (!instructor) {
@@ -43,7 +59,6 @@ export const createCourse = asyncHandler(
       !description ||
       !price ||
       !whatYouWillLearn ||
-      whatYouWillLearn === 0 ||
       !category
     ) {
       throw new ApiError({
@@ -236,12 +251,10 @@ export const getPagination = asyncHandler(
 export const getCourseByUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.currentUser;
-
-    //Extract the students enrolled in a course and their corresponding user details,
-    //including the course creator.
     const user = await Student.findById(id).populate({
       path: "enrolledCourses",
       model: "Course",
+      select: "courseName instructor thumbnail description",
       populate: {
         path: "instructor",
         model: "User",

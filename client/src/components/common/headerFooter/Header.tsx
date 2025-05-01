@@ -71,7 +71,7 @@ const Navbar: React.FC = () => {
           to="/"
           className="text-3xl font-bold text-indigo-600 hover:text-indigo-800 transition-colors duration-300"
         >
-          𝔩𝔢𝔞𝔯𝔫𝔰𝔭𝔥𝔢𝔯𝔢
+         𝙴𝚍𝚞𝚌𝚛𝚎𝚠
         </Link>
 
         <div className="mx-8 hidden lg:flex gap-x-8 lg:items-center">
@@ -119,7 +119,7 @@ const Navbar: React.FC = () => {
               to="/register-user"
               className="select-none flex justify-center items-center bg-indigo-600 text-white font-semibold px-6 py-2 rounded-full shadow-md transition-transform duration-300 ease-in-out hover:bg-slate-900 hover:scale-105"
             >
-              Sign In
+              Sign Up
               <span className="text-lg ml-2">
                 <FaArrowRight />
               </span>

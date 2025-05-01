@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/venom/Andromeda/Self projects/BrainStorm/server",
-      "program": "c:/venom/Andromeda/Self projects/BrainStorm/server/build/Debug/outDebug",
+      "cwd": "c:/venom/Andromeda/Self projects/Learning/server",
+      "program": "c:/venom/Andromeda/Self projects/Learning/server/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

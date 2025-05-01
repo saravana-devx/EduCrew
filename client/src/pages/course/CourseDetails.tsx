@@ -8,7 +8,7 @@ import {
   setLoading,
 } from "../../redux/slices/courseDetailSlice";
 import {
-  addEnrolledCourse,
+  // addEnrolledCourse,
   getUserDetails,
   loggedInStatus,
 } from "../../redux/slices/userSlice";
@@ -92,9 +92,9 @@ const Course: React.FC = () => {
     );
   }
 
-  const dispatchEnrolledCourse = (courseId: string) => {
-    dispatch(addEnrolledCourse(courseId));
-  };
+  // const dispatchEnrolledCourse = (courseId: string) => {
+  //   dispatch(addEnrolledCourse(courseId));
+  // };
 
   const handleBuyCourse = async () => {
     if (!isLoggedIn) {
@@ -105,7 +105,8 @@ const Course: React.FC = () => {
     if (userDetails.accountType === "Instructor") {
       return toast.error("Instructor can't Purchase Course");
     }
-    await makePayment(activeCourse._id, dispatchEnrolledCourse);
+    // await makePayment(activeCourse._id, dispatchEnrolledCourse);
+    await makePayment(activeCourse._id);
   };
 
   return (

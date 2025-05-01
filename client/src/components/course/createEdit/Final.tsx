@@ -58,10 +58,6 @@ const Final: React.FC = () => {
               {course?.description}
             </p>
             <p>
-              <strong className="text-indigo-500">Instructor:</strong>{" "}
-              {course?.instructor}
-            </p>
-            <p>
               <strong className="text-indigo-500">Price:</strong> ₹
               {course?.price}
             </p>

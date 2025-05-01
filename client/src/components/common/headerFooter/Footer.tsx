@@ -183,7 +183,7 @@ const Footer: React.FC = () => {
           <div className="sm:flex sm:flex-wrap sm:-mx-4 mt-6 pt-6 sm:mt-12 sm:pt-12 border-t border-gray-400">
             <div className="sm:w-full px-4 md:w-1/6">
               <strong className="text-lg sm:text-3xl md:text-4xl ">
-                𝔩𝔢𝔞𝔯𝔫𝔰𝔭𝔥𝔢𝔯𝔢
+                𝙴𝚍𝚞𝚌𝚛𝚎𝚠
               </strong>
             </div>
             <div className="px-4 sm:w-1/2 md:w-1/4 mt-4 md:mt-0">

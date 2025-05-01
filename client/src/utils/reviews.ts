@@ -1,6 +1,6 @@
 import image1 from "../assets/images/instructor.png";
 // import image2 from "../components/Home/instructor2.jpg";
-import image3 from "../components/Home/instructor4.jpg";
+import image3 from "../assets/images/instructor_4.jpg";
 import image4 from "../assets/images/instructor2.png";
 import image2 from "../assets/images/instructor0.png";
 

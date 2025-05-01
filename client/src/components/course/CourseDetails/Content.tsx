@@ -25,6 +25,12 @@ const Content: React.FC<CourseContentProps> = ({ content }) => {
   const completedVideos = useAppSelector((state) =>
     activeCourse ? getCompletedVideosByCourseId(state, activeCourse._id) : []
   );
+  // const completedVideos = useMemo(
+  //   () =>
+  //     activeCourse ? getCompletedVideosByCourseId(state, activeCourse._id) : [],
+  //   [state, activeCourse]
+  // );
+
   const toggleSection = (moduleId: string) => {
     setVisibleSections((prev) => ({
       ...prev,

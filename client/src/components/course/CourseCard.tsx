@@ -119,7 +119,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                   </p>
                 </div>
                 <p className="text-lg font-bold text-wrap min-h-14 text-slate-900 mb-2 cursor-pointer">
-                  {truncateLetters(course.courseName, 30)}
+                  {truncateLetters(course.courseName, 45)}
                 </p>
                 <div className="flex justify-between items-center">
                   <p className="text-gray-500 text-sm opacity-90">

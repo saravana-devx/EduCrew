@@ -1,7 +1,11 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL =
+  import.meta.env.MODE === 'production'
+    ? `${import.meta.env.VITE_BACKEND_URL}`
+    : 'http://localhost:4000';
+
 
 export const api = axios.create({
   withCredentials: true,

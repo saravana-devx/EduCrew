@@ -5,8 +5,25 @@ import { useAppDispatch } from "../../../hooks/redux.hook";
 import Spinner from "../../../components/common/spinner/Spinner";
 import { NoPurchasedCoursesError } from "../../../components/common/error/ErrorPage";
 import CourseCard from "../../../components/course/CourseCard";
-import { setCourseProgress } from "../../../redux/slices/userSlice";
+import {
+  addEnrolledCourse,
+  setCourseProgress,
+} from "../../../redux/slices/userSlice";
 import { CourseAPI } from "../../../api/course/CourseAPI";
+
+interface Course {
+  _id: string;
+  courseName: string;
+  description: string;
+  thumbnail: string;
+  instructor: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    image: string;
+    __t: string;
+  };
+}
 
 const StudentCourseDetails: React.FC = () => {
   const [courses, setCourses] = useState([]);
@@ -20,6 +37,9 @@ const StudentCourseDetails: React.FC = () => {
       try {
         const result = await CourseAPI.getEnrolledCourses();
         setCourses(result.data.courses);
+        result.data.courses.forEach((course: Course) => {
+          dispatch(addEnrolledCourse(course._id));
+        });
         const courseProgress = await CourseAPI.getCourseByProgress();
         dispatch(
           setCourseProgress(courseProgress.data.progressWithTotalVideos)

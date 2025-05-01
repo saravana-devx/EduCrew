@@ -87,8 +87,6 @@ export const userSlice = createSlice({
       }
     },
     setCourseProgress: (state, action: PayloadAction<CourseProgress[]>) => {
-      console.log("under course progress");
-      console.log(action.payload);
       state.courseProgress = action.payload;
     },
 

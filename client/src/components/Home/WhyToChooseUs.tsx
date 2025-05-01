@@ -15,10 +15,10 @@ const WhyToChooseUs: React.FC = () => {
         </div>
         <div className="lg:w-1/2 flex flex-col m-8 justify-center items-center">
           <h1 className="text-3xl lg:text-4xl font-bold mb-6 text-center lg:text-left text-white">
-            Why Choose LearnSphere?
+            Why Choose EduCrew?
           </h1>
           <p className="text-lg mb-6 text-center lg:text-left text-white">
-            LearnSphere is your trusted partner in education, offering a wide
+            Learn is your trusted partner in education, offering a wide
             range of courses and expert guidance to help you achieve your
             personal and professional goals. Our platform is designed to empower
             you with the skills and knowledge needed to succeed in today’s

@@ -14,7 +14,7 @@ const BecomeAnInstructor: React.FC = () => {
           </h1>
           <p className="text-lg mb-6 text-center lg:text-left text-white">
             Join our vibrant community of instructors and connect with eager
-            learners. At LearnSphere, you can shape the future of education by
+            learners. At EduCrew, you can shape the future of education by
             sharing your expertise and insights.
           </p>
           <ul className="text-lg space-y-4">

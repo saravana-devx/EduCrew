@@ -64,11 +64,11 @@ const Sidebar: React.FC<{
             {!isLoggedIn && (
               <li>
                 <Link
-                  to="/signUp"
+                  to="/register-user"
                   className="flex items-center p-2 text-gray-700 hover:bg-indigo-100 rounded-lg"
                 >
                   {" "}
-                  <FaSignInAlt className="mr-2" /> SignUp
+                  <FaSignInAlt className="mr-2" /> Sign Up
                 </Link>
               </li>
             )}

@@ -205,11 +205,6 @@ const ContactPage = () => {
             say hello!
           </p>
           <div className="mt-10 fade-in">
-            {/* <img
-              src="https://source.unsplash.com/1600x900/?office,building"
-              alt="Our Office"
-              className="w-full h-auto rounded-lg shadow-lg"
-            /> */}
           </div>
         </div>
       </section>
@@ -227,7 +222,7 @@ const ContactPage = () => {
             </div>
             <div className="flex items-center space-x-2">
               <FaEnvelope className="text-indigo-500 text-2xl" />
-              <p>brainStorm@gmail.com</p>
+              <p>educrew1234@gmail.com</p>
             </div>
             <div className="flex items-center space-x-2">
               <FaPhone className="text-indigo-500 text-2xl" />

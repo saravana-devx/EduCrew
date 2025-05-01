@@ -155,9 +155,9 @@ const purchaseCourseOperation = async (userId: string, courseId: string) => {
 
 export const stripeWebhook = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log("-----------------------------");
-    console.log("working under stripe webhooks");
-    console.log("-----------------------------");
+    // console.log("-----------------------------");
+    // console.log("working under stripe webhooks");
+    // console.log("-----------------------------");
 
     const sig = req.headers["stripe-signature"];
     const secretKey = process.env.STRIPE_SECRET_KEY;

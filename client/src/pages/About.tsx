@@ -6,7 +6,7 @@ import instructor1 from "../assets/images/instructor.png";
 import instructor2 from "../assets/images/instructor2.png";
 import missionImage from "../assets/images/Downpic.cc-1777337453.jpg";
 import instructor from "../assets/images/instructor3.png";
-import instructor4 from "../components/Home/instructor4.jpg";
+import instructor4 from "../assets/images/instructor_4.jpg";
 import { reviews } from "../utils/reviews";
 
 const instructorDetails = [
@@ -23,7 +23,7 @@ const About: React.FC = () => {
       <section className="py-20 text-center bg-opacity-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-5xl font-bold mb-6 fade-in">
-            Welcome to BrainStorm
+            Welcome to Learning
           </h1>
           <p className="text-xl leading-relaxed fade-in">
             Your ultimate platform for mastering new skills, whether you're
@@ -39,14 +39,14 @@ const About: React.FC = () => {
             <div className="fade-in">
               <h2 className="text-4xl font-bold mb-4">Our Mission</h2>
               <p className="text-xl leading-relaxed mb-4">
-                At BrainStorm, our mission is to democratize education by
+                At Learning, our mission is to democratize education by
                 empowering both learners and educators. We believe in the power
                 of knowledge and strive to make learning accessible to everyone,
                 everywhere.
               </p>
               <p className="text-xl leading-relaxed">
                 Whether you're a student looking to acquire new skills or an
-                instructor eager to share your knowledge, BrainStorm provides
+                instructor eager to share your knowledge, Learning provides
                 the tools and resources to help you succeed. Join our vibrant
                 community today and embark on your learning or teaching journey
                 with us!
@@ -125,7 +125,7 @@ const About: React.FC = () => {
             <div className="fade-in">
               <h2 className="text-4xl font-bold mb-4">Our Story</h2>
               <p className="text-xl leading-relaxed mb-4">
-                BrainStorm was born out of a desire to create a learning
+                Learning was born out of a desire to create a learning
                 environment where anyone can thrive—whether they are acquiring
                 new skills or imparting knowledge. Since our inception, we've
                 become a global community of students, instructors, and
@@ -165,7 +165,7 @@ const About: React.FC = () => {
           </h2>
           <p className="text-xl leading-relaxed mb-8 fade-in">
             Join millions of learners around the world and take the next step in
-            your educational journey with BrainStorm.
+            your educational journey with Learning.
           </p>
           <a
             href="#"

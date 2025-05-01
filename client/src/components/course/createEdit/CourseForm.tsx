@@ -110,6 +110,7 @@ const BasicInformation: React.FC = () => {
       }));
       setNewWhatYouWillLearn("");
     }
+    console.log("course form data learning points -> ",courseData)
   };
 
   const removeWhatYouWillLearn = (itemToRemove: string) => {

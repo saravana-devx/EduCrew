@@ -5,7 +5,7 @@ const example = cloudinaryConnect();
 const uploadMediaToCloudinary = async (filePath: string) => {
   try {
     const options: UploadApiOptions = {
-      folder: "Demo",
+      folder: "Learning_website",
       resource_type: "auto",
       quality: "auto:low", // Set quality to auto, which automatically applies lossy compression
       resize: "width:800,height:800", // Resize the image to reduce dimensions

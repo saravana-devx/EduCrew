@@ -21,11 +21,15 @@ dotenv.config();
 
 const app: Application = express();
 
+app.set("trust proxy", 1);
+
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, //15 minutes
-  max: 100,
-  // headers: true, //Enable if frontend needs rate-limits details
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  standardHeaders: true, // Sends rate-limit headers
+  legacyHeaders: false, // Disables old X-RateLimit headers
   handler: (req, res) => {
+    console.error("Rate limit exceeded for IP:", req.ip);
     res.status(429).json({
       success: false,
       error: "Rate limit exceeded",
@@ -35,26 +39,24 @@ const limiter = rateLimit({
   },
 });
 
-app.use(express.json());
-
 app.use(express.urlencoded({ extended: false }));
 
 app.use(limiter);
 
 app.use(mongoSanitize());
-console.log("frontend url -> ", process.env.FRONTEND_URL);
-const allowedOrigins: string[] = [
-  process.env.FRONTEND_URL || ("http://localhost:5173" as string),
-];
+
+const allowedOrigins: (string )[] =
+  process.env.NODE_ENV === "production"
+    ? [process.env.Frontend_Production_url || ""]
+    : ["http://localhost:5173"];
+
+
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
   credentials: true,
 };
-
 app.use(cors(options));
-
-app.set("trust proxy", true);
 
 app.use("/webhook", express.raw({ type: "application/json" }));
 

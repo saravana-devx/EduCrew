@@ -3,14 +3,17 @@ import { ratingAndReview } from "../../../utils/types";
 import DisplayRating from "./DisplayRating";
 import Marquee from "react-fast-marquee";
 
-
 interface ReviewProps {
   reviews: ratingAndReview[];
   shouldScroll: boolean;
 }
 
 const ReviewList: React.FC<ReviewProps> = ({ reviews, shouldScroll }) => {
-  
+
+  if (reviews.length === 0) {
+    return <div className="text-xl my-20 text-center text-indigo-500">No reviews available</div>;
+  }
+
   return (
     <div
       className={`gap-6 py-12 mx-auto px-4 sm:px-6 lg:px-8 ${
