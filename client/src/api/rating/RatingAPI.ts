@@ -18,7 +18,6 @@ export const RatingAndReviewAPI = {
       },
       headers: getHeaders(),
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -27,7 +26,6 @@ export const RatingAndReviewAPI = {
       url: RatingURL.getAverageRating + `/${courseId}`,
       method: "GET",
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -36,7 +34,6 @@ export const RatingAndReviewAPI = {
       url: RatingURL.getAllRatingByCourse + "/" + courseId,
       method: "GET",
     });
-    console.log(response.data);
     return response.data;
   },
 };

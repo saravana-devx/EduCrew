@@ -31,8 +31,6 @@ const EditProfile: React.FC = () => {
     },
   });
 
-  // console.log(userDetails);
-
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -134,7 +132,6 @@ const EditProfile: React.FC = () => {
       }
 
       const result = await ProfileAPI.updateProfile(formData);
-      console.log("result-> ", result);
       dispatch(setUserData(result.data.updatedProfile));
       toast.success("Profile updated successfully!");
       navigate("/profile");

@@ -11,8 +11,6 @@ const uploadMediaToCloudinary = async (filePath: string) => {
       resize: "width:800,height:800", // Resize the image to reduce dimensions
     };
     const result = await cloudinary.uploader.upload(filePath, options);
-    console.log(result);
-    console.log("filepath -> ", filePath);
     fs.unlinkSync(filePath);
     return result;
   } catch (error) {

@@ -19,7 +19,7 @@ const mailSender = async (
       },
     });
     const mailOptions = {
-      from: "venom86224@gmail.com - Learning.com",
+      from: "venom86224@gmail.com - educrew.com",
       to: email,
       subject: title,
       html: body,
@@ -27,7 +27,7 @@ const mailSender = async (
     let info = await transporter.sendMail(mailOptions);
     return info;
   } catch (error) {
-    console.log("Error in mailSender : ", error);
+    // console.log("Error in mailSender : ", error);
     throw Error("Something went wrong while sending email.");
   }
 };

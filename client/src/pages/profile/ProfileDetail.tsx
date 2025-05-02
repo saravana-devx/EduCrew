@@ -27,7 +27,6 @@ const ProfileDetail: React.FC = () => {
     const fetchUserDetails = async () => {
       dispatch(setLoading(true));
       const result = await ProfileAPI.profileDetails();
-      console.log(result);
       dispatch(setUserData(result.data.userDetails));
       dispatch(setLoading(false));
     };
@@ -36,8 +35,7 @@ const ProfileDetail: React.FC = () => {
   }, [dispatch]);
 
   const handleDeleteAccount = async () => {
-    const result = await ProfileAPI.deleteAccount();
-    console.log(result.data);
+    await ProfileAPI.deleteAccount();
     dispatch(setUserDataNull());
     dispatch({ type: "RESET" });
     localStorage.clear();

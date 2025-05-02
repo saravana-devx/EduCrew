@@ -129,7 +129,6 @@ export const ChangeCourseStatus: React.FC<RowActionsProps> = ({ row }) => {
       }
     }
   };
-  // console.log(rowData);
   return (
     <div className="py-4 px-6 text-center">
       <button

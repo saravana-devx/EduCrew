@@ -7,7 +7,7 @@ import { ApiResponse } from "../../utils/apiResponseHandler/apiResponse";
 import { HTTP_STATUS, RESPONSE_MESSAGES } from "../../utils/constant";
 import uploadMediaToCloudinary from "../../utils/cloudinary/uploadMediaToCloudinary";
 
-import User from "../../model/User";
+import User from "../../model/user";
 import Course from "../../model/course";
 import Profile from "../../model/profile";
 import Instructor from "../../model/instructor";
@@ -208,7 +208,6 @@ export const getInstructorDashboard = asyncHandler(
 export const getEarningByMonth = asyncHandler(
   async (req: Request, res: Response) => {
     const instructorId = req.currentUser.id;
-    console.log("id -> ", instructorId);
     const earningsByMonth = await Course.aggregate([
       {
         $match: {

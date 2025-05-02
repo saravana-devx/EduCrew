@@ -19,7 +19,7 @@ router.post("/login-user", loginUser);
 router.get("/verify-email", confirmEmail);
 router.patch("/change-password", auth, updateUserPassword);
 router.post("/forgot-password", sendPasswordResetEmail);
-router.put("/reset-password", resetPassword);
+router.patch("/reset-password", resetPassword);
 router.patch("/toggle-status", auth, toggleUserActiveStatus);
 
 export default router;

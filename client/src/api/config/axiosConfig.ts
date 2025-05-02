@@ -29,8 +29,6 @@ const errorHandler = (error: AxiosError): Promise<never> => {
       toast.error("An unexpected error occurred. Please try again.");
     }
   }
-  // else if (statusCode && statusCode !== 401 && statusCode !== 409) {
-  //   console.error(error);
   else {
     switch (statusCode) {
       case 401:

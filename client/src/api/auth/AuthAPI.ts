@@ -17,7 +17,6 @@ export const AuthAPI = {
       method: "POST",
       data,
     });
-    console.log(response.data.message);
     return response.data;
   },
   login: async function (email: string, password: string) {
@@ -26,7 +25,6 @@ export const AuthAPI = {
       method: "POST",
       data: { email, password },
     });
-    console.log(response.data);
     return response.data;
   },
   ConfirmEmail: async function (token: string | null) {
@@ -51,17 +49,14 @@ export const AuthAPI = {
         confirmPassword,
       },
     });
-    console.log(response.data);
     return response.data;
   },
   forgetPassword: async function (email: string) {
-    console.log("email -> ", email);
     const response: AxiosResponse = await api.request({
       url: AuthURL.forgotPassword,
       method: "POST",
       data: { email },
     });
-    console.log(response.data);
     return response.data;
   },
   resetForgetPassword: async function (
@@ -77,7 +72,6 @@ export const AuthAPI = {
         confirmPassword,
       },
     });
-    console.log(response.data);
     return response.data;
   },
   toggleUserActiveStatus: async function (userId: string, isActive: boolean) {

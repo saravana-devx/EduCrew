@@ -63,8 +63,8 @@ export const createCheckOutSession = async (req: Request, res: Response) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
-    success_url: `${process.env.FRONTEND_URL}/payment-success`,
-    cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
+    success_url: `${process.env.Frontend_Production_url}/payment-success`,
+    cancel_url: `${process.env.Frontend_Production_url}/payment-cancel`,
     metadata: {
       courseId: courseId,
       userId: userId,
@@ -155,9 +155,6 @@ const purchaseCourseOperation = async (userId: string, courseId: string) => {
 
 export const stripeWebhook = asyncHandler(
   async (req: Request, res: Response) => {
-    // console.log("-----------------------------");
-    // console.log("working under stripe webhooks");
-    // console.log("-----------------------------");
 
     const sig = req.headers["stripe-signature"];
     const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -178,7 +175,6 @@ export const stripeWebhook = asyncHandler(
         endpointSecret
       );
     } catch (err: any) {
-      console.error("Webhook Error:", err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -188,7 +184,6 @@ export const stripeWebhook = asyncHandler(
       const userId = session.metadata?.userId;
 
       if (!courseId || !userId) {
-        console.error("Missing metadata in Stripe session");
         return res.status(400).send("Missing metadata");
       }
 

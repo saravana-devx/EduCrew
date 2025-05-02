@@ -11,7 +11,8 @@ import asyncHandler from "../../middlewares/asyncHandler";
 import { ApiError } from "../../utils/apiResponseHandler/apiError";
 import { HTTP_STATUS, RESPONSE_MESSAGES } from "../../utils/constant";
 
-import User from "../../model/User";
+
+import User from "../../model/user";
 import Instructor from "../../model/instructor";
 import Student from "../../model/student";
 import Profile from "../../model/profile";
@@ -126,7 +127,7 @@ export const registerUser = [
 
     await user.save();
 
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+    const verificationLink = `${process.env.Frontend_Production_url}/verify-email?token=${verificationToken}`;
     const templatePath = path.join(
       __dirname,
       "..",
@@ -309,7 +310,7 @@ export const updateUserPassword = asyncHandler(
     const { email } = req.currentUser;
 
     const user = await User.findOne({ email }, { password: 1 });
-
+    
     //compare oldPassword and saved password hashed value
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
       throw new ApiError({
@@ -318,7 +319,7 @@ export const updateUserPassword = asyncHandler(
       });
     }
 
-    if (await bcrypt.compare(oldPassword, user.password)) {
+    if (await bcrypt.compare(newPassword, user.password)) {
       throw new ApiError({
         status: HTTP_STATUS.BAD_REQUEST,
         message: RESPONSE_MESSAGES.USERS.SAME_PASSWORD,
@@ -326,9 +327,6 @@ export const updateUserPassword = asyncHandler(
     }
 
     if (newPassword !== confirmPassword) {
-      /**
-       * ! change error message for checking password & confirm password
-       */
       throw new ApiError({
         status: HTTP_STATUS.CONFLICT,
         message: RESPONSE_MESSAGES.USERS.INVALID_PASSWORD,
@@ -383,7 +381,7 @@ export const sendPasswordResetEmail = [
     user.verificationToken = verificationToken;
     await user.save();
 
-    const verificationLink = `${process.env.FRONTEND_URL}/reset-password?token=${verificationToken}`;
+    const verificationLink = `${process.env.Frontend_Production_url}/reset-password?token=${verificationToken}`;
 
     // Path to your email template
     const templatePath = path.join(

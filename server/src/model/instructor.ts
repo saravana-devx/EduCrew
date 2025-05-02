@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IInstructor } from "../interfaces/interface";
-import User from "./User";
+import User from "./user";
 
 const instructorSchema: Schema<IInstructor> = new Schema<IInstructor>({
   earnings: {

@@ -39,9 +39,6 @@ const BasicInformation: React.FC = () => {
     category: "",
     status: "Draft",
   });
-  // what is the use of "courses" and "course" ? why i have made two separate variables ?
-  // const courses = useAppSelector(getCourseData);
-  // console.log("id -------------> ", courses);
   const course = useAppSelector(getCourseData);
 
   const navigate = useNavigate();
@@ -110,7 +107,6 @@ const BasicInformation: React.FC = () => {
       }));
       setNewWhatYouWillLearn("");
     }
-    console.log("course form data learning points -> ",courseData)
   };
 
   const removeWhatYouWillLearn = (itemToRemove: string) => {

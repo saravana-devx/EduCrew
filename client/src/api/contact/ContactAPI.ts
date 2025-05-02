@@ -17,7 +17,6 @@ export const ContactAPI = {
       method: "POST",
       data,
     });
-    console.log(response.data.query);
     return response.data;
   },
   deleteQueryById: async function (queryId: string) {

@@ -8,7 +8,6 @@ const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err.stack);
   const response = {
     status: err.status || HTTP_STATUS.INTERNAL_SERVER_ERROR,
     message: err.message || RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,

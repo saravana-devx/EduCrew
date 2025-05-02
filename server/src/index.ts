@@ -30,7 +30,6 @@ const limiter = rateLimit({
   standardHeaders: true, // Sends rate-limit headers
   legacyHeaders: false, // Disables old X-RateLimit headers
   handler: (req, res) => {
-    console.error("Rate limit exceeded for IP:", req.ip);
     res.status(429).json({
       success: false,
       error: "Rate limit exceeded",
@@ -75,7 +74,6 @@ app.post("/webhook", stripeWebhook);
 app.use(errorMiddleware);
 
 app.get("/", function (req: Request, res: Response): void {
-  console.log("App is running fine...");
   res.send("<h1>Server is running</h1>");
 });
 
@@ -91,7 +89,7 @@ const PORT = process.env.PORT;
 
 connectToDatabase().then(() => {
   app.listen(PORT, function () {
-    console.log("Server is running");
-    console.log(`http://localhost:${PORT}`);
+    // console.log("Server is running");
+    // console.log(`http://localhost:${PORT}`);
   });
 });

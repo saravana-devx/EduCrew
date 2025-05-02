@@ -9,7 +9,6 @@ export const SectionAPI = {
       method: "POST",
       data: { sectionName: newSection },
     });
-    console.log(response.data);
     return response.data;
   },
   updateSection: async function (
@@ -22,7 +21,6 @@ export const SectionAPI = {
       method: "PATCH",
       data: { sectionName },
     });
-    console.log(response.data);
     return response.data;
   },
   deleteSection: async function (courseId: string, sectionId: string) {
@@ -30,7 +28,6 @@ export const SectionAPI = {
       url: SectionURL.deleteSection + `/${courseId}/${sectionId}`,
       method: "POST",
     });
-    console.log(response.data);
     return response.data;
   },
 };

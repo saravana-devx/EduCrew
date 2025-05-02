@@ -89,9 +89,8 @@ export const courseEditorSlice = createSlice({
           section.subSection = [];
         }
         section.subSection.push(action.payload.subsection);
-        // console.log("Updated subsections -> ", section.subSection);
       } else {
-        console.error("Section not found for ID -> ", action.payload.sectionId);
+        console.error("Section not found for ID");
       }
       state.loading = false;
     },
@@ -117,7 +116,6 @@ export const courseEditorSlice = createSlice({
       state.loading = false;
     },
     deleteSection: (state, action: PayloadAction<string>) => {
-      console.log("delete section");
       if (state.activeCourse !== null) {
         state.activeCourse.content = state.activeCourse.content?.filter(
           (section) => section._id !== action.payload

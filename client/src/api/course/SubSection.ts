@@ -9,7 +9,6 @@ export const SubSectionAPI = {
       method: "POST",
       data,
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -23,7 +22,6 @@ export const SubSectionAPI = {
       method: "PATCH",
       data,
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -32,7 +30,6 @@ export const SubSectionAPI = {
       url: SubSectionURL.deleteSubSection + `/${sectionId}/${subSectionId}`,
       method: "POST",
     });
-    console.log(response.data);
     return response.data;
   },
 };

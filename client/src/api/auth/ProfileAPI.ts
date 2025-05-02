@@ -12,18 +12,12 @@ export const ProfileAPI = {
     return response.data;
   },
   updateProfile: async function (formData: FormData) {
-    // console.log("FormData contents:");
-    // for (const [key, value] of formData.entries()) {
-    //   console.log(`${key}:`, value);
-    // }
-    // console.log("formData -> ", formData);
     const response: AxiosResponse = await api.request({
       url: ProfileURL.updateProfile,
       method: "PUT",
       headers: getHeaders(),
       data: formData,
     });
-    // console.log(response.data);
     return response.data;
   },
   deleteAccount: async function () {
@@ -32,7 +26,6 @@ export const ProfileAPI = {
       method: "DELETE",
       headers: getHeaders(),
     });
-    console.log(response.data);
     return response.data;
   },
   getInstructorDashboardData: async function () {
@@ -41,7 +34,6 @@ export const ProfileAPI = {
       method: "GET",
       headers: getHeaders(),
     });
-    // console.log(response.data);
     return response.data;
   },
   getAdminDashboardData: async function () {
@@ -66,7 +58,6 @@ export const ProfileAPI = {
       method: "GET",
       headers: getHeaders(),
     });
-    console.log(response.data);
     return response.data;
   },
   deleteAccountByAdmin: async function (userId: string) {
@@ -74,7 +65,6 @@ export const ProfileAPI = {
       url: ProfileURL.deleteAccountByAdmin + `/${userId}`,
       method: "DELETE",
     });
-    console.log(response.data);
     return response.data;
   },
   getEarningsByMonth: async function () {

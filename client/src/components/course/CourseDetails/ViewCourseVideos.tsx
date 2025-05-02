@@ -27,7 +27,6 @@ const ViewCourseVideos: React.FC = () => {
 
   const handleReviewSubmit = async (rating: number, review: string) => {
     if (!activeCourse?._id) {
-      // console.error("Course ID is not available.");
       return;
     }
     await RatingAndReviewAPI.createRatingAndReview(

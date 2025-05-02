@@ -10,7 +10,7 @@ import uploadMediaToCloudinary from "../../utils/cloudinary/uploadMediaToCloudin
 
 import { IInstructor } from "../../interfaces/interface";
 
-import User from "../../model/User";
+import User from "../../model/user";
 import Course from "../../model/course";
 import Section from "../../model/section";
 import SubSection from "../../model/subSection";

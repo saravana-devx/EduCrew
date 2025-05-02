@@ -34,7 +34,6 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const getTopCourses = async () => {
-      console.log("fetching top-courses");
       try {
         dispatch(setLoading(true));
         const response = await CourseAPI.getTopCourses();
@@ -48,7 +47,6 @@ const Home: React.FC = () => {
         dispatch(setLoading(false));
       }
     };
-    console.log("length of courses -> ", courses.length);
     if (courses.length === 0) {
       getTopCourses();
     }

@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-import User from "./User";
+import User from "./user";
 import { IStudent } from "../interfaces/interface";
 
 const studentSchema: Schema<IStudent> = new Schema<IStudent>({

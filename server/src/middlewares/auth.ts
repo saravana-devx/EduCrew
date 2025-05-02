@@ -6,7 +6,7 @@ import { HTTP_STATUS, RESPONSE_MESSAGES } from "../utils/constant";
 
 import dotenv from "dotenv";
 
-import User from "../model/User";
+import User from "../model/user";
 import jwt from "jsonwebtoken";
 
 dotenv.config();
