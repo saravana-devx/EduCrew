@@ -12,6 +12,7 @@ import {
   LineElement,
   TooltipItem,
   ArcElement,
+  ChartOptions,
 } from "chart.js";
 import { ProfileAPI } from "../../../api/auth/ProfileAPI";
 
@@ -120,7 +121,7 @@ export const EarningsByCourse: React.FC = () => {
     ],
   };
 
-  const chartOptions = {
+  const chartOptions: ChartOptions<"bar">  = {
     responsive: true,
     // maintainAspectRatio: false, // Prevents chart distortion
     indexAxis: "y", // Correct
@@ -150,9 +151,9 @@ export const EarningsByCourse: React.FC = () => {
           text: "No. of Students",
           font: { size: 14 },
         },
-        ticks: {
-          beginAtZero: true,
-        },
+        // ticks: {
+        //   beginAtZero: true,
+        // },
       },
       y: {
         title: {

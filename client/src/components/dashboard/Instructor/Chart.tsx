@@ -11,7 +11,8 @@ import {
   PointElement,
   LineElement,
   TooltipItem,
-} from "chart.js"; 
+  ChartOptions,
+} from "chart.js";
 import { ProfileAPI } from "../../../api/auth/ProfileAPI";
 
 ChartJS.register(
@@ -24,7 +25,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
 
 interface CourseData {
   courseName: string;
@@ -51,11 +51,11 @@ export const EarningsByMonthChart: React.FC = () => {
     labels: earningsData.map((item) => item._id), // Months as labels ("2024-01")
     datasets: [
       {
-        label: "Total Earnings ($)", 
-        data: earningsData.map((item) => item.totalEarnings), 
-        fill: false, 
-        backgroundColor: "rgb(159, 168, 218)", 
-        borderColor: "rgb(159, 168, 218)", 
+        label: "Total Earnings ($)",
+        data: earningsData.map((item) => item.totalEarnings),
+        fill: false,
+        backgroundColor: "rgb(159, 168, 218)",
+        borderColor: "rgb(159, 168, 218)",
         borderWidth: 2,
         tension: 0.4, // Smooth line curve
       },
@@ -152,7 +152,7 @@ export const EarningsByCourse: React.FC = () => {
   };
 
   // Chart options (customize as needed)
-  const chartOptions = {
+  const chartOptions: ChartOptions<"bar"> = {
     responsive: true,
     // maintainAspectRatio: true, // Prevents chart distortion
     indexAxis: "y", // Correct
@@ -182,9 +182,9 @@ export const EarningsByCourse: React.FC = () => {
           text: "Earnings ($)",
           font: { size: 14 },
         },
-        ticks: {
-          beginAtZero: true,
-        },
+        // ticks: {
+        //   beginAtZero: true,
+        // },
       },
 
       y: {

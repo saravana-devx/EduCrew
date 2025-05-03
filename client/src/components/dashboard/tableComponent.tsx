@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import  { Fragment } from "react";
 import Pagination from "./pagination";
 import { flexRender, Table } from "@tanstack/react-table";
 import { RxCaretDown, RxCaretUp, RxCaretSort } from "react-icons/rx";
