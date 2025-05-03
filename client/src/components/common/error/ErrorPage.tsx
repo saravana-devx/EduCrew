@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import Error404 from "../../../assets/Images/Error404.jpg";
+import Error404 from "../../../assets/images/Error404.jpg";
 
 type ErrorMessage = {
   image: string;

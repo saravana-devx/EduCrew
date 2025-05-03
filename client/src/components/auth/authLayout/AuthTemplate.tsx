@@ -1,5 +1,5 @@
 import React from "react";
-import registerForm from "../../../assets/Images/registerForm.png";
+import registerForm from "../../../assets/images/registerForm.png";
 import { useAppSelector } from "../../../hooks/redux.hook";
 import { getLoading } from "../../../redux/slices/userSlice";
 import Spinner from "../../common/spinner/Spinner";

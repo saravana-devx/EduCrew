@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
-import instructor1 from "../../assets/Images/instructor2.png";
-import instructor from "../../assets/Images/instructor3.png";
+import instructor1 from "../../assets/images/instructor2.png";
+import instructor from "../../assets/images/instructor3.png";
 
-import instructor2 from "../../assets/Images/instructor_2.png";
-import instructor4 from "../../assets/Images/instructor_4.jpg";
+import instructor2 from "../../assets/images/instructor_2.png";
+import instructor4 from "../../assets/images/instructor_4.jpg";
 
 const TopInstructors: React.FC = () => {
   const instructorDetails = [

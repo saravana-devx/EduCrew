@@ -1,6 +1,6 @@
 import React from "react";
 import { TiTick } from "react-icons/ti";
-import instructor from "../../assets/Images/instructor0.png";
+import instructor from "../../assets/images/instructor0.png";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 

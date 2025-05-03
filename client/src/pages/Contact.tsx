@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-import contactImage from "../assets/Images/contact.jpg";
-
+import contactImage from "../assets/images/contact.jpg";
 import { ContactAPI } from "../api/contact/ContactAPI";
 
 interface Query {

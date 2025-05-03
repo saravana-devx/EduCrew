@@ -1,6 +1,6 @@
 import React from "react";
 import { TiTick } from "react-icons/ti";
-import image from "../../assets/Images/student.png";
+import image from "../../assets/images/student.png";
 
 const WhyToChooseUs: React.FC = () => {
   return (

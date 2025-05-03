@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Error500 from "../../../assets/Images/Error500.png";
+import Error500 from "../../../assets/images/Error500.png";
 
 export const SomethingWentWrong: React.FC = () => {
   const navigate = useNavigate();
