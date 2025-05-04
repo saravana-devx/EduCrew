@@ -47,7 +47,7 @@ Follow the steps below to set up the project on your local machine:
 ### 1. Clone the repository
 
 ```bash
-git clone <https://github.com/yourusername/educrew.git>
+git clone https://github.com/saravana-devx/EduCrew.git
 cd educrew
 
 ```
