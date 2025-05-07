@@ -62,7 +62,7 @@ npm install
 
 ### 3. Environment Variables
 
-Create a `.env` file in the client folder of the project and add the following environment variables:
+Create a `.env` file in the server folder of the project and add the following environment variables:
 
 ```
 

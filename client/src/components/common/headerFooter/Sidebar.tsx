@@ -26,7 +26,7 @@ const Sidebar: React.FC<{
       } lg:hidden`}
     >
       <div className="p-4">
-        <h2 className="text-2xl font-bold text-indigo-600">𝔩𝔢𝔞𝔯𝔫𝔰𝔭𝔥𝔢𝔯𝔢</h2>
+        <h2 className="text-2xl font-bold text-indigo-600">𝙴𝚍𝚞𝚌𝚛𝚎𝚠</h2>
         <nav className="mt-6" ref={sideBarRef}>
           <ul className="space-y-2">
             <li>
