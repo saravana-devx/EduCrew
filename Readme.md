@@ -36,7 +36,6 @@ EduCrew is a MERN-based (MongoDB, Express, React, Node.js) E-Learning Platform t
 - **Stripe** - Payment gateway integration to handle secure transactions for course enrollments.
 - **Cloudinary** - Image and video storage solution for hosting media related to courses.
 - **Nodemailer** - For sending email notifications to users.
-- **Helmet** - For securing HTTP headers and preventing attacks.
 - **Morgan** - HTTP request logger middleware for better logging and monitoring.
 - **Rate Limiting** - To prevent DDoS and brute force attacks by limiting the number of requests a user can make.
 
